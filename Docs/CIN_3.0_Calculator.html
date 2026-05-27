@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CIN 3.0 — Pricing &amp; Funnel Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A2540;
+    --navy-2:#061A2E;
+    --brand:#2AACDB;
+    --brand-2:#1B7A99;
+    --brand-soft:#E8F5FA;
+    --ink:#1A2433;
+    --mute:#5A6772;
+    --line:#E0E6ED;
+    --bg:#F7FAFC;
+    --card:#FFFFFF;
+    --warn:#B5651D;
+    --good:#2D8C5C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+  /* === HEADER === */
+  header{
+    background:var(--navy);
+    color:#fff;
+    padding:36px 32px 56px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    top:0;right:0;
+    width:520px;height:520px;
+    background:radial-gradient(circle, rgba(42,172,219,.18), transparent 65%);
+    pointer-events:none;
+  }
+  .accent-square{
+    width:14px;height:14px;
+    background:var(--brand);
+    margin-bottom:24px;
+  }
+  .kicker{
+    font-size:11px;
+    letter-spacing:5px;
+    color:var(--brand);
+    text-transform:uppercase;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-size:48px;
+    font-weight:600;
+    letter-spacing:-1px;
+    line-height:1.1;
+    margin-bottom:12px;
+  }
+  header p.lead{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:20px;
+    color:#C8D1DB;
+    max-width:680px;
+  }
+
+  /* === TABS === */
+  .tabs{
+    display:flex;
+    gap:0;
+    background:var(--card);
+    padding:0 32px;
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .tab{
+    background:none;border:0;
+    padding:18px 28px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--mute);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:all .2s;
+  }
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--navy);border-bottom-color:var(--brand)}
+
+  /* === LAYOUT === */
+  .container{
+    max-width:1280px;
+    margin:0 auto;
+    padding:32px;
+  }
+  .grid-2{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:32px;
+  }
+  @media (max-width:900px){
+    .grid-2{grid-template-columns:1fr}
+  }
+
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:28px;
+  }
+  .panel h2{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--navy);
+  }
+  .panel .subtitle{
+    color:var(--mute);
+    font-size:13px;
+    margin-bottom:24px;
+  }
+
+  /* === FORM === */
+  .field{margin-bottom:22px}
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--mute);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
+  }
+  .field-value{
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:4px;
+  }
+  .field-value .unit{
+    font-size:13px;
+    font-family:'Inter',sans-serif;
+    color:var(--mute);
+    font-weight:400;
+    margin-left:4px;
+  }
+  input[type=range]{
+    width:100%;
+    height:6px;
+    -webkit-appearance:none;
+    appearance:none;
+    background:var(--line);
+    border-radius:3px;
+    outline:none;
+    margin:8px 0 4px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:18px;height:18px;
+    background:var(--brand);
+    border-radius:50%;
+    cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 2px 6px rgba(10,37,64,.2);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:18px;height:18px;
+    background:var(--brand);
+    border-radius:50%;
+    cursor:pointer;
+    border:3px solid #fff;
+  }
+  .range-labels{
+    display:flex;justify-content:space-between;
+    font-size:11px;color:var(--mute);
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* === TIER PILLS === */
+  .tier-pills{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+  .tier-pill{
+    border:1px solid var(--line);
+    background:#fff;
+    padding:14px 8px;
+    border-radius:4px;
+    cursor:pointer;
+    text-align:center;
+    transition:all .15s;
+  }
+  .tier-pill:hover{border-color:var(--brand)}
+  .tier-pill.active{
+    border-color:var(--brand);
+    background:var(--brand-soft);
+  }
+  .tier-pill .num{
+    font-family:'Fraunces',serif;
+    font-size:20px;font-weight:600;
+    color:var(--navy);
+  }
+  .tier-pill .lbl{
+    font-size:10px;color:var(--mute);
+    margin-top:2px;
+  }
+
+  /* === RESULT CARD === */
+  .result-hero{
+    background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+    color:#fff;
+    border-radius:6px;
+    padding:36px;
+    margin-bottom:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .result-hero::before{
+    content:"";
+    position:absolute;
+    top:-100px;right:-100px;
+    width:340px;height:340px;
+    background:radial-gradient(circle, rgba(42,172,219,.25), transparent 60%);
+  }
+  .result-hero .line{
+    position:relative;
+    margin-bottom:20px;
+  }
+  .result-hero .lbl{
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--brand);
+    margin-bottom:6px;
+  }
+  .result-hero .big{
+    font-family:'Fraunces',serif;
+    font-size:64px;
+    font-weight:600;
+    letter-spacing:-2px;
+    line-height:1;
+  }
+  .result-hero .big .small{
+    font-size:24px;
+    color:#C8D1DB;
+    margin-left:6px;
+  }
+  .result-hero .yr{
+    color:#C8D1DB;
+    font-size:14px;
+    margin-top:6px;
+  }
+
+  .breakdown{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    border-top:1px solid rgba(255,255,255,.15);
+    padding-top:20px;
+    position:relative;
+  }
+  .breakdown-item{}
+  .breakdown-item .l{font-size:11px;color:#C8D1DB;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+  .breakdown-item .v{font-family:'Fraunces',serif;font-size:20px;font-weight:500}
+
+  /* === COMPARISON TABLE === */
+  .compare-table{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .compare-table table{width:100%;border-collapse:collapse}
+  .compare-table th{
+    background:var(--navy);
+    color:#fff;
+    text-align:left;
+    padding:14px 16px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+  }
+  .compare-table th:not(:first-child){text-align:right}
+  .compare-table td{
+    padding:14px 16px;
+    font-size:13px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+  }
+  .compare-table td:not(:first-child){text-align:right;font-family:'JetBrains Mono',monospace}
+  .compare-table tbody tr:last-child td{border-bottom:0}
+  .compare-table tbody tr:hover{background:var(--bg)}
+  .compare-table .pkg{font-weight:600;color:var(--navy)}
+  .compare-table .strong{font-weight:600;color:var(--navy)}
+
+  /* === ARR DASHBOARD === */
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-bottom:24px;
+  }
+  @media (max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+  .stat{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:22px;
+    position:relative;
+  }
+  .stat::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;width:3px;
+    background:var(--brand);
+  }
+  .stat .l{
+    font-size:11px;color:var(--mute);
+    text-transform:uppercase;letter-spacing:1px;
+    margin-bottom:8px;
+  }
+  .stat .v{
+    font-family:'Fraunces',serif;
+    font-size:32px;font-weight:600;
+    color:var(--navy);line-height:1;
+  }
+  .stat .sub{
+    font-size:11px;color:var(--mute);
+    margin-top:6px;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* === MIX SLIDERS === */
+  .mix-row{
+    display:grid;
+    grid-template-columns:120px 1fr 60px;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .mix-row .name{font-size:13px;font-weight:500;color:var(--ink)}
+  .mix-row .pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    text-align:right;
+    color:var(--navy);
+    font-weight:600;
+  }
+  .mix-warning{
+    background:#FFF4E5;
+    border-left:3px solid var(--warn);
+    padding:10px 14px;
+    font-size:12px;
+    color:var(--warn);
+    border-radius:3px;
+    margin-top:8px;
+    display:none;
+  }
+  .mix-warning.show{display:block}
+
+  /* === FUNNEL VIZ === */
+  .funnel{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:12px;
+  }
+  .funnel-row{
+    display:grid;
+    grid-template-columns:130px 1fr 90px;
+    align-items:center;
+    gap:12px;
+    font-size:12px;
+  }
+  .funnel-row .lbl{color:var(--mute)}
+  .funnel-bar{
+    height:28px;
+    background:var(--brand);
+    border-radius:3px;
+    position:relative;
+    transition:width .3s ease;
+  }
+  .funnel-row:nth-child(1) .funnel-bar{background:#73CDE7}
+  .funnel-row:nth-child(2) .funnel-bar{background:#5BBEDF}
+  .funnel-row:nth-child(3) .funnel-bar{background:#3FB1D6}
+  .funnel-row:nth-child(4) .funnel-bar{background:var(--brand)}
+  .funnel-row:nth-child(5) .funnel-bar{background:var(--brand-2)}
+  .funnel-row .num{
+    text-align:right;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    color:var(--navy);
+  }
+
+  /* === PHASE TABLE === */
+  .phase-list{margin-top:8px}
+  .phase-row{
+    display:grid;
+    grid-template-columns:80px 100px 1fr 100px;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .phase-row:last-child{border-bottom:0}
+  .phase-row .ph{
+    color:var(--brand-2);
+    font-weight:600;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .phase-row .bg{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .phase-row .res{
+    text-align:right;
+    color:var(--navy);
+    font-weight:600;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* === FOOTER === */
+  footer{
+    text-align:center;
+    color:var(--mute);
+    font-size:12px;
+    padding:32px;
+    border-top:1px solid var(--line);
+    margin-top:40px;
+  }
+  footer strong{color:var(--ink)}
+
+  .hidden{display:none!important}
+
+  /* === PRICING 4-COLUMN GRID === */
+  .pc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:24px;
+  }
+  @media (max-width:900px){
+    .pc-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  .pc-col{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:0 0 22px 0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .pc-head{
+    background:var(--navy);
+    color:#fff;
+    padding:18px 18px;
+    text-align:center;
+  }
+  .pc-head .pc-name{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    font-weight:600;
+    line-height:1.2;
+    margin-bottom:4px;
+  }
+  .pc-head .pc-base{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--brand);
+    letter-spacing:1px;
+  }
+  .pc-body{
+    padding:18px 18px 0;
+    flex:1;
+  }
+  .pc-field{
+    margin-bottom:16px;
+  }
+  .pc-field label{
+    display:block;
+    font-size:10px;
+    color:var(--mute);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .pc-field .pc-num{
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .pc-field input[type=range]{
+    width:100%;
+    margin:4px 0 2px;
+  }
+  .pc-field .pc-range-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    color:var(--mute);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .pc-results{
+    background:var(--brand-soft);
+    margin-top:8px;
+    padding:14px 18px;
+    border-top:1px solid var(--line);
+  }
+  .pc-results .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:12px;
+    padding:5px 0;
+    color:var(--ink);
+  }
+  .pc-results .row .lbl{color:var(--mute);font-size:11px}
+  .pc-results .row .val{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    color:var(--navy);
+  }
+  .pc-results .row.total{
+    border-top:1px solid var(--line);
+    padding-top:8px;
+    margin-top:6px;
+  }
+  .pc-results .row.total .lbl{
+    color:var(--navy);
+    font-weight:600;
+    font-size:12px;
+  }
+  .pc-results .row.total .val{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+  }
+
+  /* === GRAND TOTAL ROW === */
+  .pc-total-bar{
+    background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+    color:#fff;
+    border-radius:6px;
+    padding:28px 32px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .pc-total-bar::before{
+    content:"";
+    position:absolute;
+    top:-100px;right:-100px;
+    width:340px;height:340px;
+    background:radial-gradient(circle, rgba(42,172,219,.22), transparent 60%);
+    pointer-events:none;
+  }
+  .pc-total-bar .item{position:relative}
+  .pc-total-bar .l{
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--brand);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .pc-total-bar .v{
+    font-family:'Fraunces',serif;
+    font-size:38px;
+    font-weight:600;
+    letter-spacing:-1px;
+    line-height:1;
+  }
+  .pc-total-bar .v .small{
+    font-size:14px;
+    color:#C8D1DB;
+    margin-left:4px;
+  }
+  .pc-total-bar .sub{
+    color:#C8D1DB;
+    font-size:11px;
+    margin-top:6px;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  /* === TIER PORTFOLIO (INLINE-SLIDER TABLE) === */
+  .pf-summary{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .pf-summary table{width:100%;border-collapse:collapse}
+  .pf-summary th{
+    background:var(--navy);
+    color:#fff;
+    padding:14px 16px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    text-align:right;
+  }
+  .pf-summary th:first-child{text-align:left}
+  .pf-summary td{
+    padding:14px 16px;
+    font-size:13px;
+    border-bottom:1px solid var(--line);
+    text-align:right;
+    font-family:'JetBrains Mono',monospace;
+    vertical-align:middle;
+  }
+  .pf-summary td:first-child{
+    text-align:left;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    color:var(--navy);
+  }
+  .pf-summary tbody tr:last-child td{border-bottom:0}
+  .pf-summary tbody tr:hover{background:var(--bg)}
+  .pf-summary .total-row td{
+    background:var(--brand-soft);
+    border-top:2px solid var(--brand);
+    font-weight:600;
+    color:var(--navy);
+    font-size:14px;
+    padding-top:18px;
+    padding-bottom:18px;
+  }
+  .pf-summary .total-row td:first-child{font-family:'Fraunces',serif}
+
+  /* slider cell */
+  .pf-cell{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+    min-width:120px;
+  }
+  .pf-cell .pf-num{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    font-weight:600;
+    color:var(--navy);
+    line-height:1;
+  }
+  .pf-cell input[type=range]{
+    width:100%;
+    margin:0;
+    height:5px;
+  }
+  .pf-cell input[type=range]::-webkit-slider-thumb{
+    width:14px;height:14px;
+    border-width:2px;
+  }
+
+  .total-bar{
+    background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+    color:#fff;
+    border-radius:6px;
+    padding:24px 28px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:24px;
+    margin-bottom:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .total-bar::before{
+    content:"";
+    position:absolute;
+    top:-80px;right:-80px;
+    width:280px;height:280px;
+    background:radial-gradient(circle, rgba(42,172,219,.20), transparent 60%);
+  }
+  .total-bar .tb-item{position:relative}
+  .total-bar .tb-l{
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--brand);
+    margin-bottom:6px;
+  }
+  .total-bar .tb-v{
+    font-family:'Fraunces',serif;
+    font-size:36px;
+    font-weight:600;
+    letter-spacing:-1px;
+    line-height:1;
+  }
+  .total-bar .tb-v .small{
+    font-size:16px;
+    color:#C8D1DB;
+    margin-left:4px;
+  }
+  .total-bar .tb-sub{
+    color:#C8D1DB;
+    font-size:11px;
+    margin-top:6px;
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="accent-square"></div>
+  <div class="kicker">CIN 3.0 · INTERAKTIVER RECHNER</div>
+  <h1>Pricing &amp; Funnel Calculator</h1>
+  <p class="lead">Spielt mit Tier-Auswahl, User-Anzahl und Funnel-Annahmen. Direkter Diskussions-Ankerpunkt für Urs, Mischa, Bruno.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="pricing">Pricing-Calculator</button>
+  <button class="tab" data-tab="funnel">ARR &amp; Funnel-Modell</button>
+</nav>
+
+<!-- ========== PRICING TAB ========== -->
+<div class="container" id="tab-pricing">
+
+  <h2 style="font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--navy);margin-bottom:6px">Portfolio-Kalkulation</h2>
+  <p style="color:var(--mute);font-size:13px;margin-bottom:24px">Pro Tier: Anzahl Kunden &amp; Ø User pro Kunde. Alle Werte rechnen live, das Total unten summiert über alle Tiers.</p>
+
+  <div class="pc-grid" id="pcGrid"></div>
+
+  <div class="pc-total-bar">
+    <div class="item">
+      <div class="l">Kunden Total</div>
+      <div class="v" id="pcTotalCust">0</div>
+      <div class="sub">über alle Tiers</div>
+    </div>
+    <div class="item">
+      <div class="l">User Total</div>
+      <div class="v" id="pcTotalUsers">0</div>
+      <div class="sub">aktive Lizenzen</div>
+    </div>
+    <div class="item">
+      <div class="l">MRR</div>
+      <div class="v"><span id="pcTotalMRR">0</span><span class="small">CHF/Mo</span></div>
+      <div class="sub">monatlich wiederkehrend</div>
+    </div>
+    <div class="item">
+      <div class="l">ARR</div>
+      <div class="v"><span id="pcTotalARR">0</span><span class="small">CHF/Jahr</span></div>
+      <div class="sub">Annual Recurring Revenue</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;font-size:12px;color:var(--mute);font-style:italic">
+    Tipp: Bei einem User pro Kunde liegt der Preis exakt auf dem Tier-Basispreis (99 / 299 / 499 / 699 CHF). Mehr User = additive Expansion-Revenue.
+  </div>
+</div>
+
+<!-- ========== FUNNEL TAB ========== -->
+<div class="container hidden" id="tab-funnel">
+
+  <!-- Headline stats -->
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="l">Ziel-Kunden / Monat</div>
+      <div class="v" id="kpiTarget">10</div>
+      <div class="sub">stabil ab Monat 7–8</div>
+    </div>
+    <div class="stat">
+      <div class="l">Ad-Budget / Monat</div>
+      <div class="v"><span id="kpiBudget">5'500</span><span style="font-size:14px;color:var(--mute);margin-left:4px">CHF</span></div>
+      <div class="sub">~5'500–6'500 nominal</div>
+    </div>
+    <div class="stat">
+      <div class="l">CAC pro Kunde</div>
+      <div class="v"><span id="kpiCAC">550</span><span style="font-size:14px;color:var(--mute);margin-left:4px">CHF</span></div>
+      <div class="sub">Cost of Customer Acquisition</div>
+    </div>
+    <div class="stat">
+      <div class="l">ARR Jahr 1</div>
+      <div class="v"><span id="kpiARR">580</span><span style="font-size:14px;color:var(--mute);margin-left:4px">k CHF</span></div>
+      <div class="sub">aus dem Funnel-Modell</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- LEFT: Funnel inputs -->
+    <div class="panel">
+      <h2>Funnel-Parameter</h2>
+      <p class="subtitle">So viele Kunden / Trials / Klicks brauchen wir, um euer Ziel zu erreichen.</p>
+
+      <div class="field">
+        <label>Ziel: Kunden / Monat</label>
+        <div class="field-value"><span id="targetVal">10</span><span class="unit">neu / Monat</span></div>
+        <input type="range" id="targetSlider" min="2" max="30" value="10" />
+        <div class="range-labels"><span>2</span><span>10</span><span>20</span><span>30</span></div>
+      </div>
+
+      <div class="field">
+        <label>Trial → Paid Conversion</label>
+        <div class="field-value"><span id="t2pVal">20</span><span class="unit">%</span></div>
+        <input type="range" id="t2pSlider" min="10" max="35" value="20" />
+        <div class="range-labels"><span>10%</span><span>20%</span><span>35%</span></div>
+      </div>
+
+      <div class="field">
+        <label>Click → Trial Conversion</label>
+        <div class="field-value"><span id="c2tVal">5</span><span class="unit">%</span></div>
+        <input type="range" id="c2tSlider" min="2" max="10" value="5" />
+        <div class="range-labels"><span>2%</span><span>5%</span><span>10%</span></div>
+      </div>
+
+      <div class="field">
+        <label>Cost per Click (LinkedIn DACH)</label>
+        <div class="field-value"><span id="cpcVal">9</span><span class="unit">EUR</span></div>
+        <input type="range" id="cpcSlider" min="4" max="14" value="9" />
+        <div class="range-labels"><span>4</span><span>9</span><span>14</span></div>
+      </div>
+
+      <div class="field">
+        <label>Anteil organisch (Content + Webinare)</label>
+        <div class="field-value"><span id="orgVal">40</span><span class="unit">%</span></div>
+        <input type="range" id="orgSlider" min="0" max="80" value="40" />
+        <div class="range-labels"><span>0%</span><span>40%</span><span>80%</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Funnel viz + ARR -->
+    <div>
+      <div class="panel" style="margin-bottom:24px">
+        <h2>So sieht der Funnel aus</h2>
+        <p class="subtitle">Was monatlich oben in den Trichter rein muss, damit unten <span id="funnelGoal">10</span> zahlende Kunden rauskommen.</p>
+        <div class="funnel" id="funnelViz">
+          <div class="funnel-row"><div class="lbl">Ad-Impressions</div><div><div class="funnel-bar" style="width:100%"></div></div><div class="num" id="fImp">200'000</div></div>
+          <div class="funnel-row"><div class="lbl">Klicks (bezahlt)</div><div><div class="funnel-bar" style="width:60%"></div></div><div class="num" id="fClk">600</div></div>
+          <div class="funnel-row"><div class="lbl">Klicks (organisch)</div><div><div class="funnel-bar" style="width:40%"></div></div><div class="num" id="fOrg">400</div></div>
+          <div class="funnel-row"><div class="lbl">Trial-Sign-ups</div><div><div class="funnel-bar" style="width:25%"></div></div><div class="num" id="fTrl">50</div></div>
+          <div class="funnel-row"><div class="lbl">Zahlende Kunden</div><div><div class="funnel-bar" style="width:8%"></div></div><div class="num" id="fPay">10</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Hochlauf 12 Monate</h2>
+        <p class="subtitle">Realistische Skalierung von Pre-Launch zu stabilem Ziel-State.</p>
+        <div class="phase-list" id="phaseList"></div>
+        <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--mute);font-style:italic">
+          Faustregel: Stabile <span id="phaseGoal">10</span>/Monat ab Monat 7–8. Vorher J-Curve mit Aufbauphase. Reine Cold-Ads ohne organische Hebel würden ~<span id="pureCold">9'000</span> CHF/Monat kosten.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ARR scenarios -->
+  <div style="margin-top:32px">
+    <h2 style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:6px">ARR-Szenarien Jahr 1</h2>
+    <p style="color:var(--mute);font-size:13px;margin-bottom:18px">Bei eurem aktuellen Tier-Mix &amp; Ziel-State (10 Kunden/Monat × 12 Monate × Ø ACV).</p>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr><th>Szenario</th><th>Kunden / Jahr</th><th>Ø ACV</th><th>ARR</th></tr>
+        </thead>
+        <tbody id="arrTable"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:var(--mute);font-style:italic">
+      Basis-Annahme Mix: 50% Tier 1 / 30% Tier 2 / 15% Tier 3 / 5% Tier 4. Ø Seats pro Tier: 5 / 10 / 20 / 50.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>CIN 3.0 Calculator</strong>  ·  Diskussionsgrundlage für Founder-Sitzung  ·  April 2026<br>
+  <span style="color:var(--mute)">Alle Werte sind Modellannahmen, keine Forecasts. Tier-Mix &amp; Conversion-Raten basieren auf DACH-B2B-SaaS-Benchmarks.</span>
+</footer>
+
+<script>
+// =================== CONFIG ===================
+const TIERS = [
+  { id:1, name:'Trends entdecken', sub:'Modul A', price:99,  inc:1, add:9,  desc:'Steckbriefe, Explorer, Dashboard Basic, Trendradar, User-Management, Insight-Lite' },
+  { id:2, name:'Probleme prüfen', sub:'+ Modul B', price:299, inc:2, add:29, desc:'+ Insight-Agent, Rating, JTBD-Extraktion, Wettbewerbs-Map, Mock-Interviews' },
+  { id:3, name:'Lösungen testen', sub:'+ Modul C', price:499, inc:3, add:49, desc:'+ Interview-Agent, Auto-Landing-Pages, Pricing-Discovery, Wireframe-Generator' },
+  { id:4, name:'Initiativen starten', sub:'+ Modul D', price:699, inc:4, add:69, desc:'+ Initiative Charter, Handover-Pakete, Workflow, Reporting Pro' }
+];
+
+let curTier_unused = 1; // legacy — no longer used after pricing tab refactor
+
+// =================== TABS ===================
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const which = t.dataset.tab;
+    document.getElementById('tab-pricing').classList.toggle('hidden', which!=='pricing');
+    document.getElementById('tab-funnel').classList.toggle('hidden', which!=='funnel');
+  });
+});
+
+// =================== HELPERS ===================
+function calcPrice(tier, users){
+  const t = TIERS[tier-1];
+  const extraUsers = Math.max(0, users - t.inc);
+  const monthly = t.price + extraUsers * t.add;
+  return { monthly, yearly: monthly*12, extraUsers, perUser: monthly/users };
+}
+
+function fmtCHF(n){ return n.toLocaleString('de-CH').replace(/,/g,"'"); }
+
+// Compatibility shim — funnel section uses calcPrice(tier,users).yearly etc.
+// keep raw integer accessor for portfolio math
+function priceMo(tier, users){ return calcPrice(tier, users).monthly; }
+
+// =================== PRICING TAB (4-COLUMN PORTFOLIO) ===================
+const portfolio = [
+  { tier:1, customers:30, avgUsers:3 },
+  { tier:2, customers:18, avgUsers:6 },
+  { tier:3, customers:9,  avgUsers:12 },
+  { tier:4, customers:3,  avgUsers:30 }
+];
+
+function renderPricingTab(){
+  const grid = document.getElementById('pcGrid');
+  grid.innerHTML = portfolio.map((p, idx) => {
+    const t = TIERS[p.tier-1];
+    return '<div class="pc-col">'+
+      '<div class="pc-head">'+
+        '<div class="pc-name">'+t.name+'</div>'+
+        '<div class="pc-base">ab '+t.price+' CHF / 1 User</div>'+
+      '</div>'+
+      '<div class="pc-body">'+
+        '<div class="pc-field">'+
+          '<label>Anzahl Kunden</label>'+
+          '<div class="pc-num"><span id="pcCust'+idx+'">'+p.customers+'</span></div>'+
+          '<input type="range" id="pcCustSlider'+idx+'" min="0" max="200" value="'+p.customers+'" />'+
+          '<div class="pc-range-labels"><span>0</span><span>50</span><span>100</span><span>200</span></div>'+
+        '</div>'+
+        '<div class="pc-field">'+
+          '<label>Ø User pro Kunde</label>'+
+          '<div class="pc-num"><span id="pcUser'+idx+'">'+p.avgUsers+'</span></div>'+
+          '<input type="range" id="pcUserSlider'+idx+'" min="1" max="100" value="'+p.avgUsers+'" />'+
+          '<div class="pc-range-labels"><span>1</span><span>25</span><span>50</span><span>100</span></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="pc-results">'+
+        '<div class="row"><span class="lbl">Preis / Kunde</span><span class="val" id="pcPrice'+idx+'">—</span></div>'+
+        '<div class="row"><span class="lbl">User Total</span><span class="val" id="pcUserTotal'+idx+'">—</span></div>'+
+        '<div class="row total"><span class="lbl">MRR</span><span class="val" id="pcMRR'+idx+'">—</span></div>'+
+        '<div class="row"><span class="lbl">ARR</span><span class="val" id="pcARR'+idx+'">—</span></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  portfolio.forEach((p, idx) => {
+    document.getElementById('pcCustSlider'+idx).addEventListener('input', e=>{
+      portfolio[idx].customers = parseInt(e.target.value);
+      updatePricingTab();
+    });
+    document.getElementById('pcUserSlider'+idx).addEventListener('input', e=>{
+      portfolio[idx].avgUsers = parseInt(e.target.value);
+      updatePricingTab();
+    });
+  });
+}
+
+function updatePricingTab(){
+  let totalCust = 0, totalMRR = 0, totalUsers = 0;
+  portfolio.forEach((p, idx) => {
+    const pricePerCust = priceMo(p.tier, p.avgUsers);
+    const tierMRR = p.customers * pricePerCust;
+    const tierUsers = p.customers * p.avgUsers;
+    totalCust += p.customers;
+    totalMRR += tierMRR;
+    totalUsers += tierUsers;
+
+    document.getElementById('pcCust'+idx).textContent = p.customers;
+    document.getElementById('pcUser'+idx).textContent = p.avgUsers;
+    document.getElementById('pcPrice'+idx).textContent = fmtCHF(pricePerCust)+' CHF';
+    document.getElementById('pcUserTotal'+idx).textContent = fmtCHF(tierUsers);
+    document.getElementById('pcMRR'+idx).textContent = fmtCHF(tierMRR)+' CHF';
+    document.getElementById('pcARR'+idx).textContent = fmtCHF(tierMRR*12)+' CHF';
+  });
+
+  document.getElementById('pcTotalCust').textContent = totalCust;
+  document.getElementById('pcTotalUsers').textContent = fmtCHF(totalUsers);
+  document.getElementById('pcTotalMRR').textContent = fmtCHF(totalMRR);
+  document.getElementById('pcTotalARR').textContent = fmtCHF(totalMRR*12);
+}
+
+renderPricingTab();
+updatePricingTab();
+
+// =================== FUNNEL ===================
+const f = {
+  target: 10,
+  t2p: 0.20,
+  c2t: 0.05,
+  cpc: 9,
+  org: 0.40
+};
+
+function calcFunnel(){
+  const trialsNeeded = f.target / f.t2p;
+  const totalClicks = trialsNeeded / f.c2t;
+  const orgClicks = totalClicks * f.org;
+  const paidClicks = totalClicks * (1-f.org);
+  const adBudget = paidClicks * f.cpc; // EUR
+  const adBudgetCHF = adBudget * 0.95;  // approx EUR→CHF
+  const cac = adBudgetCHF / f.target;
+  const impressions = paidClicks / 0.01; // assume 1% CTR
+  const pureColdBudget = totalClicks * f.cpc * 0.95;
+
+  // ARR scenarios — assume tier mix 50/30/15/5 with avg seats 5/10/20/50
+  const customers = f.target * 12;
+  const acv1 = calcPrice(1,5).yearly;
+  const acv2 = calcPrice(2,10).yearly;
+  const acv3 = calcPrice(3,20).yearly;
+  const acv4 = calcPrice(4,50).yearly;
+  const avgACV = 0.50*acv1 + 0.30*acv2 + 0.15*acv3 + 0.05*acv4;
+  const arr = customers * avgACV;
+
+  return { trialsNeeded, totalClicks, orgClicks, paidClicks, adBudgetCHF, cac, impressions, pureColdBudget, customers, avgACV, arr };
+}
+
+function updateFunnel(){
+  document.getElementById('targetVal').textContent = f.target;
+  document.getElementById('t2pVal').textContent = Math.round(f.t2p*100);
+  document.getElementById('c2tVal').textContent = Math.round(f.c2t*100);
+  document.getElementById('cpcVal').textContent = f.cpc;
+  document.getElementById('orgVal').textContent = Math.round(f.org*100);
+
+  const r = calcFunnel();
+
+  // KPI cards
+  document.getElementById('kpiTarget').textContent = f.target;
+  document.getElementById('kpiBudget').textContent = fmtCHF(Math.round(r.adBudgetCHF));
+  document.getElementById('kpiCAC').textContent = fmtCHF(Math.round(r.cac));
+  document.getElementById('kpiARR').textContent = fmtCHF(Math.round(r.arr/1000));
+
+  // Funnel viz
+  document.getElementById('fImp').textContent = fmtCHF(Math.round(r.impressions));
+  document.getElementById('fClk').textContent = fmtCHF(Math.round(r.paidClicks));
+  document.getElementById('fOrg').textContent = fmtCHF(Math.round(r.orgClicks));
+  document.getElementById('fTrl').textContent = fmtCHF(Math.round(r.trialsNeeded));
+  document.getElementById('fPay').textContent = f.target;
+  document.getElementById('funnelGoal').textContent = f.target;
+  document.getElementById('phaseGoal').textContent = f.target;
+  document.getElementById('pureCold').textContent = fmtCHF(Math.round(r.pureColdBudget));
+
+  // Bar widths (relative to top)
+  const max = r.impressions;
+  document.querySelectorAll('#funnelViz .funnel-row').forEach((row,i)=>{
+    const vals = [r.impressions, r.paidClicks, r.orgClicks, r.trialsNeeded, f.target];
+    const pct = Math.max(2, (vals[i]/max)*100);
+    row.querySelector('.funnel-bar').style.width = pct+'%';
+  });
+
+  // Phase list
+  const phases = [
+    { p:'Phase 1', m:'Mo. 1–3', b:1500, t:Math.round(f.target*0.3), n:'Foundation' },
+    { p:'Phase 2', m:'Mo. 4–6', b:Math.round(r.adBudgetCHF*0.65), t:Math.round(f.target*0.65), n:'Launch' },
+    { p:'Phase 3', m:'Mo. 7–9', b:Math.round(r.adBudgetCHF), t:f.target, n:'Stable' },
+    { p:'Phase 4', m:'Mo. 10–12', b:Math.round(r.adBudgetCHF*1.15), t:Math.round(f.target*1.2), n:'Scale' }
+  ];
+  document.getElementById('phaseList').innerHTML = phases.map(ph=>
+    '<div class="phase-row">'+
+      '<div class="ph">'+ph.p+'</div>'+
+      '<div class="bg">'+ph.m+'</div>'+
+      '<div>Budget '+fmtCHF(ph.b)+' CHF/Mo · '+ph.n+'</div>'+
+      '<div class="res">~'+ph.t+' Kd/Mo</div>'+
+    '</div>'
+  ).join('');
+
+  // ARR table
+  const customers = f.target*12;
+  const scenarios = [
+    { n:'Konservativ', mix:[.60,.25,.10,.05], cust:Math.round(customers*0.6) },
+    { n:'Realistisch', mix:[.50,.30,.15,.05], cust:customers },
+    { n:'Optimistisch', mix:[.45,.30,.20,.05], cust:Math.round(customers*1.4) }
+  ];
+  document.getElementById('arrTable').innerHTML = scenarios.map(sc=>{
+    const avg = sc.mix[0]*calcPrice(1,5).yearly + sc.mix[1]*calcPrice(2,10).yearly + sc.mix[2]*calcPrice(3,20).yearly + sc.mix[3]*calcPrice(4,50).yearly;
+    const arr = sc.cust*avg;
+    const isCenter = sc.n==='Realistisch';
+    return '<tr'+(isCenter?' style="background:var(--brand-soft)"':'')+'>'+
+      '<td class="strong">'+sc.n+'</td>'+
+      '<td>'+sc.cust+'</td>'+
+      '<td>'+fmtCHF(Math.round(avg))+' CHF</td>'+
+      '<td class="strong">'+fmtCHF(Math.round(arr))+' CHF</td>'+
+      '</tr>';
+  }).join('');
+}
+
+// Funnel sliders
+document.getElementById('targetSlider').addEventListener('input', e=>{ f.target = parseInt(e.target.value); updateFunnel(); });
+document.getElementById('t2pSlider').addEventListener('input', e=>{ f.t2p = parseInt(e.target.value)/100; updateFunnel(); });
+document.getElementById('c2tSlider').addEventListener('input', e=>{ f.c2t = parseInt(e.target.value)/100; updateFunnel(); });
+document.getElementById('cpcSlider').addEventListener('input', e=>{ f.cpc = parseInt(e.target.value); updateFunnel(); });
+document.getElementById('orgSlider').addEventListener('input', e=>{ f.org = parseInt(e.target.value)/100; updateFunnel(); });
+
+updateFunnel();
+
+
+</script>
+
+</body>
+</html>
