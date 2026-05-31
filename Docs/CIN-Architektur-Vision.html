@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIN 3.0 — Architektur-Vision | MCP Server + Operations Platform</title>
+<style>
+  :root {
+    --dark: #1a1a2e;
+    --blue: #0f3460;
+    --accent: #e94560;
+    --green: #27ae60;
+    --orange: #e67e22;
+    --red: #c0392b;
+    --gray: #7f8c8d;
+    --light: #f8f9fa;
+    --white: #ffffff;
+    --purple: #8e44ad;
+    --teal: #16a085;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: #333; line-height: 1.7; background: var(--light); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  header { background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%); color: white; padding: 50px 0 40px; margin-bottom: 30px; }
+  header h1 { font-size: 2.4em; color: var(--accent); margin-bottom: 4px; }
+  header .subtitle { font-size: 1.2em; color: #ccc; margin-bottom: 12px; }
+  header p { color: #999; font-size: 0.9em; }
+
+  section { background: white; border-radius: 10px; padding: 32px 36px; margin-bottom: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  h2 { color: var(--dark); border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-bottom: 22px; font-size: 1.5em; }
+  h3 { color: var(--blue); margin: 24px 0 12px; font-size: 1.15em; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9em; }
+  th { background: var(--dark); color: white; padding: 11px 14px; text-align: left; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:nth-child(even) { background: #f8f9fa; }
+
+  .badge { display: inline-block; padding: 3px 11px; border-radius: 12px; font-size: 0.78em; font-weight: 600; color: white; }
+  .badge-green { background: var(--green); }
+  .badge-red { background: var(--red); }
+  .badge-orange { background: var(--orange); }
+  .badge-blue { background: var(--blue); }
+  .badge-purple { background: var(--purple); }
+  .badge-teal { background: var(--teal); }
+  .badge-gray { background: var(--gray); }
+
+  .callout { padding: 18px 22px; border-radius: 8px; margin: 18px 0; }
+  .callout-blue { background: #e8f0fe; border-left: 4px solid var(--blue); color: #1a3a6e; }
+  .callout-green { background: #e8f8e8; border-left: 4px solid var(--green); color: #1a5a2a; }
+  .callout-orange { background: #fff3e0; border-left: 4px solid var(--orange); color: #8a4a09; }
+  .callout-accent { background: #fde8ec; border-left: 4px solid var(--accent); color: #8a1a30; }
+
+  /* MEETING NOTES */
+  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .founder-card { border-radius: 10px; padding: 20px 22px; border: 1px solid #e8e8e8; background: white; }
+  .founder-card h4 { margin-bottom: 8px; font-size: 1.05em; }
+  .founder-card p { font-size: 0.9em; color: #555; margin-bottom: 6px; }
+  .founder-card .role { font-size: 0.78em; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+  /* ARCHITECTURE DIAGRAM — SVG based */
+  .arch-svg-wrap {
+    width: 100%;
+    max-width: 960px;
+    margin: 24px auto;
+    overflow-x: auto;
+  }
+  .arch-svg-wrap svg { display: block; width: 100%; height: auto; }
+
+  .flow-line { display: flex; align-items: center; gap: 0; margin: 24px 0; flex-wrap: wrap; justify-content: center; }
+  .flow-step {
+    padding: 12px 18px; border-radius: 8px; font-size: 0.85em; text-align: center;
+    min-width: 110px; color: white; line-height: 1.4;
+  }
+  .flow-arrow { padding: 0 6px; color: #bbb; font-size: 1.5em; }
+
+  /* TIMELINE */
+  .timeline { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin: 20px 0; }
+  .timeline-col {
+    border-radius: 12px; padding: 24px; color: white;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+  }
+  .timeline-col h4 { color: white; margin: 0 0 4px; font-size: 1em; }
+  .timeline-col .time { font-size: 1.8em; font-weight: 800; opacity: 0.9; margin-bottom: 10px; line-height: 1; }
+  .timeline-col ul { padding-left: 16px; margin-top: 10px; }
+  .timeline-col li { margin-bottom: 5px; font-size: 0.88em; }
+
+  code { background: #eee; padding: 1px 6px; border-radius: 3px; font-size: 0.88em; }
+  ul:not(.arch-box ul):not(.timeline-col ul) { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 5px; }
+  p { margin-bottom: 12px; }
+  strong { color: #222; }
+
+  footer { text-align: center; padding: 30px; color: var(--gray); font-size: 0.85em; }
+
+  @media print {
+    body { background: white; }
+    section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  }
+  @media (max-width: 900px) {
+    .founder-grid { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr; }
+    .arch-diagram { display: flex; flex-direction: column; gap: 12px; }
+    .arch-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="subtitle">Architektur-Vision &amp; Fahrplan</div>
+    <h1>CIN 3.0 — Der Weg nach vorn</h1>
+    <p>Ergebnis Founder-Meeting 29.05.2026 | Strategieentscheidung: Weiterfuehren und fokussieren</p>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- INTRO: MEETING-ERGEBNIS -->
+<!-- ============================================================ -->
+<section>
+  <h2>Ausgangslage — Founder-Meeting vom 29. Mai 2026</h2>
+
+  <p>Am 29. Mai 2026 trafen sich die vier Gesellschafter von CIN zu einem offenen Austausch ueber die Zukunft des Unternehmens. Die Erwartungen waren klar formuliert: <strong>Wo stehen wir, wie geht es weiter, und was koennen wir uns leisten?</strong></p>
+
+  <div class="founder-grid">
+    <div class="founder-card">
+      <h4>Mischa</h4>
+      <div class="role">Architektur</div>
+      <p>Wollte den aktuellen technischen Stand sichtbar machen und klaeren, wie es mit der Entwicklung weitergeht. Zeigte den Stand des Workflow-Moduls — funktionell vorhanden, aber in der Usability noch nicht ausgereift. Investiert aktuell ca. einen Tag pro Woche.</p>
+    </div>
+    <div class="founder-card">
+      <h4>Alexander</h4>
+      <div class="role">Vertrieb / Operations</div>
+      <p>Brachte den aktuellen Stand der Sales Pipeline mit und die ehrliche Erkenntnis, dass der Vertrieb in der bisherigen Form nicht mehr tragbar ist. Die Projektleitung der Entwicklung wurde an den externen Haupt-Entwickler (alex.st) uebergeben.</p>
+    </div>
+    <div class="founder-card">
+      <h4>Urs</h4>
+      <div class="role">Marketing / GTM</div>
+      <p>Betonte, dass Entscheidungen gefaellt werden muessen — insbesondere zur finanziellen Situation. Das Budget fuer externe Entwicklung ist faktisch aufgebraucht. Ab Juni werden nur noch klar geschaetzte Arbeitspakete beauftragt.</p>
+    </div>
+    <div class="founder-card">
+      <h4>Bruno</h4>
+      <div class="role">Architektur / Strategie</div>
+      <p>Praesentierte die Tiefenanalyse der bestehenden Codebase, die drei strategischen Wege (Weiterentwickeln, Greenfield, Einstampfen) und die Vision fuer eine KI-native Zukunft. Uebernahm konkrete Aufgaben: Calendly kuendigen, Telefone kuendigen.</p>
+    </div>
+  </div>
+
+  <h3>Was bereits steht</h3>
+  <p>Die Entwicklung hat trotz knapper Ressourcen konkrete Ergebnisse geliefert:</p>
+  <ul>
+    <li>Das <strong>Workflow-Modul</strong> ist funktionell verfuegbar — die Usability muss noch verbessert werden, aber die Grundlage steht.</li>
+    <li>Der <strong>Interview-Agent</strong> (KI-gestuetzte Interviews ueber Kampagnen) ist kurz vor dem Abschluss.</li>
+    <li>Ein <strong>AI-Agent zur automatischen Inhaltsgenerierung</strong> existiert bereits — er kann Inhalte selbststaendig erstellen.</li>
+    <li>Ein weiterer <strong>Agent fuer Widget-basierte Content-Generierung</strong> ist in Arbeit — damit koennen Steckbriefe mit allen Feldern automatisch befuellt werden.</li>
+  </ul>
+
+  <h3>Die kritischen Entscheidungen</h3>
+  <p>Das Meeting fuehrte zu klaren Beschluessen:</p>
+  <ul>
+    <li><strong>Budget:</strong> Ab Juni werden nur noch klar geschaetzte Arbeitspakete abgeliefert. Kein offenes Budget mehr fuer die externe Entwicklung.</li>
+    <li><strong>Agents als Zukunft:</strong> Die KI-Agents werden der zentrale Differenzierungsfaktor sein. Damit wird CIN neue Kunden gewinnen — nicht mit manuell aufgesetzten Plattformen.</li>
+    <li><strong>Bestandskunden sichern:</strong> Die drei zahlenden Kunden muessen gehalten werden, damit das Budget fuer 2027 gesichert ist. Das ist die operative Grundlage fuer alles Weitere.</li>
+    <li><strong>Vertrieb herunterfahren:</strong> Per Ende Juni werden der aktive Verkauf, Bayram und LinkedIn-Aktivitaeten eingestellt. Pipedrive ist zu komplex und schwerfaellig — koennte perspektivisch durch KI-Automatisierung ersetzt werden.</li>
+    <li><strong>Kosten senken:</strong> Calendly kuendigen (Bruno), Telefone kuendigen (Bruno).</li>
+    <li><strong>Neuer Ansatz:</strong> CIN soll mit einfachen Mitteln versuchen, neue Kunden zu generieren — nicht ueber aufwaendige Vertriebsprozesse, sondern ueber ein Self-Service-Modell.</li>
+  </ul>
+
+  <div class="callout callout-accent">
+    <strong>Die zentrale Idee aus dem Meeting:</strong> Eine Landing-Page mit Template-Auswahl, Mini-CRM und Mini-Ticketsystem, inklusive Zahlungsanbindung. Ein Lead waehlt sein Branchen-Template, zahlt den Intro-Preis von <strong>199 CHF fuer einen Monat</strong> und bekommt sofort einen fertigen Trend-Radar: 15 Trends die im Onboarding per KI-Bot erfragt werden, eine vorbereitete Rating-Kampagne und 4-5 Action Boards. Kein Vertriebsgespraech, kein Implementierungsprojekt — einfach loslegen.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- VISION -->
+<!-- ============================================================ -->
+<section>
+  <h2>Die Vision — Branchen-Radars auf Knopfdruck</h2>
+
+  <p>CIN wird ein <strong>Self-Service-Produkt</strong>. Statt monatelanger Implementierungsprojekte setzt eine KI komplette Branchen-Radars automatisiert auf. Der Kunde waehlt sein Template, bezahlt und arbeitet innerhalb von Minuten mit einem vollstaendig eingerichteten Innovations-Radar.</p>
+
+  <p>Dafuer braucht es zwei neue Bausteine, die das bestehende trendradar-System erweitern:</p>
+
+  <div class="flow-line">
+    <div class="flow-step" style="background:var(--orange);">Lead besucht<br>Landing-Page</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--orange);">Branchen-Template<br>auswaehlen</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--gray);">Kreditkarte<br>199 CHF</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--teal);">Ops Platform<br>erstellt Tenant</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--purple);">MCP Server<br>schreibt direkt in DB</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--green);">Fertiger Radar<br>in 5 Minuten</div>
+  </div>
+
+  <h3>Was der Kunde bekommt (Paket fuer 199 CHF/Monat)</h3>
+  <ul>
+    <li><strong>15 branchenspezifische Trend-Steckbriefe</strong> — automatisch erstellt, mit KI-generierten Bildern und Beschreibungen, abgestimmt auf die gewaehlte Branche</li>
+    <li><strong>KI-Bot im Onboarding</strong> — fragt den Kunden nach seinen spezifischen Interessen und passt die Trends entsprechend an</li>
+    <li><strong>Vorbereitete Rating-Kampagne</strong> — der Kunde kann sofort sein Team einladen, um Trends zu bewerten und zu priorisieren</li>
+    <li><strong>4-5 Action Boards</strong> — fertig konfigurierte Portfolio-Ansichten fuer die Steuerung von Innovationsvorhaben</li>
+    <li><strong>Verlinkungen zwischen Trends</strong> — die KI erkennt automatisch Zusammenhaenge und setzt Relations</li>
+  </ul>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARCHITEKTUR-DIAGRAMM -->
+<!-- ============================================================ -->
+<section>
+  <h2>Architektur — Das Gesamtbild</h2>
+
+  <p>Die neue Architektur setzt auf <strong>direkten Datenbankzugriff</strong> statt auf die bestehende .NET REST API. Der MCP Server hat eine eigene <strong>MCP-API (TypeScript)</strong>, die direkt auf dieselbe PostgreSQL-Datenbank zugreift, die auch das .NET Backend nutzt. Der Kunde arbeitet weiterhin im bestehenden React Frontend — da beide Systeme dieselbe Datenbank verwenden, sieht er alle Aenderungen sofort.</p>
+
+  <div class="callout callout-green">
+    <strong>Vorteile des direkten DB-Zugriffs:</strong> Kein Kampf mit v1/v2/MVC-Chaos, kein Form-Post-Hacking fuer Content Types, kein 5-Minuten Token-Refresh. Content Types, Steckbriefe, Ratings — alles wird direkt in die DB geschrieben, der Kunde sieht es sofort im React Frontend. Eine TypeScript-Codebase, die Founders koennen alles lesen. Das .NET Backend laeuft weiter fuer Bestandskunden — keine Migration noetig.
+  </div>
+
+  <div class="arch-svg-wrap">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 780">
+    <defs>
+      <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#aab" /></marker>
+      <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.12"/></filter>
+      <linearGradient id="gPurple" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8e44ad"/><stop offset="100%" stop-color="#6c3483"/></linearGradient>
+      <linearGradient id="gTeal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#16a085"/><stop offset="100%" stop-color="#0e6655"/></linearGradient>
+      <linearGradient id="gRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c0392b"/><stop offset="100%" stop-color="#922b21"/></linearGradient>
+      <linearGradient id="gOrange" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e67e22"/><stop offset="100%" stop-color="#d35400"/></linearGradient>
+      <linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#27ae60"/><stop offset="100%" stop-color="#1e8449"/></linearGradient>
+      <linearGradient id="gGray" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7f8c8d"/><stop offset="100%" stop-color="#636e72"/></linearGradient>
+      <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2980b9"/><stop offset="100%" stop-color="#1a5276"/></linearGradient>
+      <style>
+        .node-title { font: bold 13px 'Segoe UI', sans-serif; fill: #fff; }
+        .node-tech  { font: italic 10px 'Segoe UI', sans-serif; fill: rgba(255,255,255,0.65); }
+        .node-item  { font: 11px 'Segoe UI', sans-serif; fill: rgba(255,255,255,0.9); }
+        .edge-label { font: 10px 'Segoe UI', sans-serif; fill: #888; }
+        .edge-label-bold { font: bold 11px 'Segoe UI', sans-serif; fill: #6c3483; }
+      </style>
+    </defs>
+
+    <!-- ===== EDGES (drawn first, behind nodes) ===== -->
+    <!-- Founder → Claude -->
+    <line x1="815" y1="62" x2="660" y2="62" stroke="#bbc" stroke-width="1.5" marker-end="url(#ah)" stroke-dasharray="5,3"/>
+    <text x="720" y="54" class="edge-label">gibt Anweisungen</text>
+
+    <!-- Lead → Onboarding -->
+    <line x1="155" y1="108" x2="155" y2="178" stroke="#bbc" stroke-width="1.5" marker-end="url(#ah)"/>
+    <text x="162" y="148" class="edge-label">besucht</text>
+
+    <!-- Claude → MCP Server -->
+    <line x1="555" y1="108" x2="555" y2="178" stroke="#bbc" stroke-width="2" marker-end="url(#ah)"/>
+    <text x="562" y="148" class="edge-label">steuert via MCP</text>
+
+    <!-- Onboarding → Ops Platform -->
+    <line x1="195" y1="278" x2="195" y2="368" stroke="#bbc" stroke-width="1.5" marker-end="url(#ah)"/>
+    <text x="202" y="328" class="edge-label">erstellt Tenant</text>
+
+    <!-- MCP Server → MCP-API -->
+    <line x1="530" y1="278" x2="530" y2="368" stroke="#8e44ad" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="538" y="328" class="edge-label-bold">MCP-API Calls</text>
+
+    <!-- MCP-API → trendradar PostgreSQL (direct DB) -->
+    <line x1="530" y1="498" x2="530" y2="568" stroke="#8e44ad" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="538" y="538" class="edge-label-bold">direkter DB-Zugriff</text>
+
+    <!-- .NET Backend → trendradar PostgreSQL (same DB) -->
+    <line x1="810" y1="498" x2="700" y2="568" stroke="#c0392b" stroke-width="2" marker-end="url(#ah)"/>
+    <text x="760" y="538" class="edge-label">liest/schreibt</text>
+
+    <!-- .NET Backend → React Frontend -->
+    <line x1="810" y1="368" x2="810" y2="278" stroke="#bbc" stroke-width="1.5" marker-end="url(#ah)"/>
+    <text x="818" y="328" class="edge-label">serves</text>
+
+    <!-- MCP Server → Ops Platform -->
+    <path d="M460,240 C380,240 300,300 250,368" stroke="#bbc" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-dasharray="5,3"/>
+    <text x="310" y="290" class="edge-label">Tenant-Mgmt</text>
+
+    <!-- Ops Platform → Ops DB -->
+    <line x1="195" y1="498" x2="195" y2="568" stroke="#bbc" stroke-width="1.5" marker-end="url(#ah)"/>
+    <text x="202" y="538" class="edge-label">CRUD</text>
+
+    <!-- Ops Platform → Stripe -->
+    <line x1="195" y1="498" x2="195" y2="628" stroke="none"/>
+    <path d="M340,470 C380,520 380,560 380,628" stroke="#bbc" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+    <text x="388" y="560" class="edge-label">Payment</text>
+
+    <!-- "SAME DB" annotation -->
+    <text x="580" y="616" style="font: bold 11px 'Segoe UI', sans-serif; fill: #c0392b;">SELBE DATENBANK</text>
+
+    <!-- ===== NODES ===== -->
+
+    <!-- Lead / Kunde -->
+    <g filter="url(#shadow)">
+      <rect x="30" y="20" width="250" height="88" rx="10" fill="url(#gOrange)"/>
+      <text x="50" y="48" class="node-title">🎯  Lead / Kunde</text>
+      <text x="50" y="68" class="node-item">Besucht Landing-Page</text>
+      <text x="50" y="84" class="node-item">Waehlt Template · 199 CHF/Mt</text>
+    </g>
+
+    <!-- Claude / AI -->
+    <g filter="url(#shadow)">
+      <rect x="430" y="20" width="260" height="88" rx="10" fill="url(#gPurple)"/>
+      <text x="450" y="48" class="node-title">🤖  Claude / AI Orchestrator</text>
+      <text x="450" y="68" class="node-item">Steuert alles via MCP Protocol</text>
+      <text x="450" y="84" class="node-item">Setzt Branchen-Radars auf</text>
+    </g>
+
+    <!-- Founder -->
+    <g filter="url(#shadow)">
+      <rect x="740" y="20" width="200" height="88" rx="10" fill="url(#gOrange)"/>
+      <text x="760" y="48" class="node-title">👥  Founder-Team</text>
+      <text x="760" y="68" class="node-item">Bruno &amp; Mischa: Architektur</text>
+      <text x="760" y="84" class="node-item">Alexander: Ops · Urs: GTM</text>
+    </g>
+
+    <!-- Onboarding Page -->
+    <g filter="url(#shadow)">
+      <rect x="30" y="180" width="250" height="98" rx="10" fill="url(#gTeal)"/>
+      <text x="50" y="208" class="node-title">📋  Onboarding Page</text>
+      <text x="50" y="225" class="node-tech">React / Next.js</text>
+      <text x="50" y="243" class="node-item">Template-Auswahl · Stripe Checkout</text>
+      <text x="50" y="259" class="node-item">Self-Service, kein Vertrieb</text>
+    </g>
+
+    <!-- React Frontend (Kunde arbeitet hier) -->
+    <g filter="url(#shadow)">
+      <rect x="700" y="180" width="240" height="98" rx="10" fill="url(#gGreen)"/>
+      <text x="720" y="208" class="node-title">🖥️  React Frontend</text>
+      <text x="720" y="225" class="node-tech">React 19 / Chakra v3 / Vite</text>
+      <text x="720" y="243" class="node-item">Bestehendes Kunden-UI</text>
+      <text x="720" y="259" class="node-item">Kunde arbeitet hier (unveraendert)</text>
+    </g>
+
+    <!-- MCP Server -->
+    <g filter="url(#shadow)">
+      <rect x="390" y="180" width="280" height="98" rx="10" fill="url(#gPurple)"/>
+      <text x="410" y="208" class="node-title">⚡  MCP Server</text>
+      <text x="410" y="225" class="node-tech">TypeScript / Node.js / MCP SDK</text>
+      <text x="410" y="243" class="node-item">14 Tools fuer Claude</text>
+      <text x="410" y="259" class="node-item">Eigene MCP-API, kein .NET-Wrapper</text>
+    </g>
+
+    <!-- CIN Operations Platform -->
+    <g filter="url(#shadow)">
+      <rect x="30" y="370" width="320" height="128" rx="10" fill="url(#gTeal)"/>
+      <text x="50" y="398" class="node-title">🏢  CIN Operations Platform</text>
+      <text x="50" y="415" class="node-tech">TypeScript / Node.js + eigene PostgreSQL</text>
+      <text x="50" y="435" class="node-item">Tenant-Lifecycle · Template-Katalog</text>
+      <text x="50" y="451" class="node-item">Mini CRM · Ticketing</text>
+      <text x="50" y="467" class="node-item">Billing (Stripe) · Onboarding API</text>
+    </g>
+
+    <!-- MCP-API -->
+    <g filter="url(#shadow)">
+      <rect x="400" y="370" width="260" height="128" rx="10" fill="url(#gPurple)"/>
+      <text x="420" y="398" class="node-title">🔌  MCP-API</text>
+      <text x="420" y="415" class="node-tech">TypeScript / direkter DB-Zugriff</text>
+      <text x="420" y="435" class="node-item">Content Types · Steckbriefe · Ratings</text>
+      <text x="420" y="451" class="node-item">Relations · Campaigns · Workflows</text>
+      <text x="420" y="467" class="node-item">Kein v1/v2/MVC — direkt zur DB</text>
+      <text x="420" y="483" class="node-item">Eine Codebase, Founders lesen alles</text>
+    </g>
+
+    <!-- .NET Backend (bestehend, laeuft weiter) -->
+    <g filter="url(#shadow)">
+      <rect x="690" y="370" width="250" height="128" rx="10" fill="url(#gRed)"/>
+      <text x="710" y="398" class="node-title">📡  .NET Backend</text>
+      <text x="710" y="415" class="node-tech">Bestehendes .NET 6 Backend</text>
+      <text x="710" y="435" class="node-item">v2: Explorer, Workflows, Campaigns</text>
+      <text x="710" y="451" class="node-item">v1: Relations, Image Gen, Widgets</text>
+      <text x="710" y="467" class="node-item">MVC: Content Types, Ratings</text>
+      <text x="710" y="483" class="node-item">Laeuft weiter fuer React Frontend</text>
+    </g>
+
+    <!-- Operations DB (separate) -->
+    <g filter="url(#shadow)">
+      <rect x="30" y="570" width="240" height="78" rx="10" fill="url(#gGray)"/>
+      <text x="50" y="598" class="node-title">💾  Operations DB</text>
+      <text x="50" y="615" class="node-tech">PostgreSQL / Supabase (eigene DB)</text>
+      <text x="50" y="633" class="node-item">Tenants · CRM · Tickets · Billing</text>
+    </g>
+
+    <!-- trendradar PostgreSQL (shared) -->
+    <g filter="url(#shadow)">
+      <rect x="400" y="570" width="260" height="78" rx="10" fill="url(#gBlue)"/>
+      <text x="420" y="598" class="node-title">💾  trendradar PostgreSQL</text>
+      <text x="420" y="615" class="node-tech">Gemeinsame Datenbank</text>
+      <text x="420" y="633" class="node-item">MCP-API + .NET Backend → selbe DB</text>
+    </g>
+
+    <!-- Stripe -->
+    <g filter="url(#shadow)">
+      <rect x="300" y="630" width="180" height="78" rx="10" fill="url(#gGray)"/>
+      <text x="320" y="658" class="node-title">💳  Stripe</text>
+      <text x="320" y="675" class="node-tech">Payment Gateway</text>
+      <text x="320" y="693" class="node-item">199 CHF/Monat · Trial</text>
+    </g>
+
+    <!-- NOT USED annotation on .NET Backend -->
+    <rect x="694" y="504" width="180" height="20" rx="4" fill="#fff3e0" stroke="#e67e22" stroke-width="1"/>
+    <text x="704" y="518" style="font: italic 10px 'Segoe UI', sans-serif; fill: #e67e22;">NICHT vom MCP genutzt</text>
+
+    <!-- Legend -->
+    <g transform="translate(30, 740)">
+      <rect x="0" y="0" width="12" height="12" rx="2" fill="url(#gPurple)"/><text x="18" y="10" class="edge-label">MCP / AI / MCP-API</text>
+      <rect x="140" y="0" width="12" height="12" rx="2" fill="url(#gTeal)"/><text x="158" y="10" class="edge-label">Operations (neu)</text>
+      <rect x="270" y="0" width="12" height="12" rx="2" fill="url(#gRed)"/><text x="288" y="10" class="edge-label">.NET Backend (bestehend)</text>
+      <rect x="440" y="0" width="12" height="12" rx="2" fill="url(#gGreen)"/><text x="458" y="10" class="edge-label">Frontend (bestehend)</text>
+      <rect x="580" y="0" width="12" height="12" rx="2" fill="url(#gBlue)"/><text x="598" y="10" class="edge-label">Gemeinsame DB</text>
+      <rect x="700" y="0" width="12" height="12" rx="2" fill="url(#gGray)"/><text x="718" y="10" class="edge-label">Infrastruktur</text>
+      <rect x="810" y="0" width="12" height="12" rx="2" fill="url(#gOrange)"/><text x="828" y="10" class="edge-label">Personen</text>
+    </g>
+  </svg>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- MCP TOOLS -->
+<!-- ============================================================ -->
+<section>
+  <h2>MCP Server — Die Werkzeuge fuer Claude</h2>
+
+  <p>Der MCP Server stellt Claude 14 spezialisierte Tools zur Verfuegung. Die MCP-API (TypeScript) greift direkt auf die trendradar PostgreSQL-Datenbank zu — kein Umweg ueber die .NET REST API, kein Token-Refresh, kein v1/v2/MVC-Chaos. Damit kann die KI einen kompletten Branchen-Radar aufsetzen, ohne dass ein Mensch eingreifen muss.</p>
+
+  <table>
+    <tr><th>Tool</th><th>Beschreibung</th><th>Backend</th></tr>
+    <tr><td><code>create_tenant</code></td><td>Neuen Mandanten anlegen und initialisieren</td><td><span class="badge badge-teal">Operations</span></td></tr>
+    <tr><td><code>create_content_type</code></td><td>Steckbrief-Typ mit Widgets erstellen (z.B. "Trend", "Technologie", "Startup")</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_rating_structure</code></td><td>Rating-Felder fuer einen Content Type definieren (z.B. Relevanz, Reife, Impact)</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_content_item</code></td><td>Steckbrief anlegen und alle Widgets komplett ausfuellen</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>update_content_item</code></td><td>Bestehenden Steckbrief aktualisieren</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>generate_image</code></td><td>Bild fuer einen Steckbrief via DALL-E generieren</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_relations</code></td><td>Verlinkungen zwischen Steckbriefen erstellen und bewerten</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_campaign</code></td><td>Interview- oder Rating-Kampagne aufsetzen</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_workflow_type</code></td><td>Workflow-Typ mit Stages definieren</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>create_workflow</code></td><td>Workflow mit Tracks und Items erstellen</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>list_content_items</code></td><td>Steckbriefe durchsuchen und filtern</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>get_content_details</code></td><td>Vollstaendige Steckbrief-Details abrufen</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>list_campaigns</code></td><td>Kampagnen auflisten und filtern</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+    <tr><td><code>list_workflows</code></td><td>Workflows und deren Status abrufen</td><td><span class="badge badge-purple">MCP-API (direkt DB)</span></td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- OPERATIONS PLATFORM -->
+<!-- ============================================================ -->
+<section>
+  <h2>CIN Operations Platform — Das Backoffice</h2>
+
+  <p>Die Operations Platform ersetzt Pipedrive, separate Ticketing-Tools und manuelle Tenant-Verwaltung durch <strong>eine schlanke, massgeschneiderte Loesung</strong>. Kein Featuremonster — nur das, was CIN tatsaechlich braucht.</p>
+
+  <table>
+    <tr><th>Modul</th><th>Was es loest</th><th>Ersetzt</th></tr>
+    <tr><td><strong>Tenant-Lifecycle</strong></td><td>Mandanten erstellen, aktivieren, pausieren, loeschen. Template-basiertes Provisioning — ein Klick, fertig.</td><td>Manuelle DB-Eintraege</td></tr>
+    <tr><td><strong>Template-Katalog</strong></td><td>Branchen-Radar-Templates verwalten: welche Content Types, Widgets, Rating-Strukturen und Beispiel-Steckbriefe gehoeren zum Template.</td><td>—</td></tr>
+    <tr><td><strong>Mini CRM</strong></td><td>Leads, Kunden und Kontakte verwalten. Kein Salesforce, kein Pipedrive — nur Name, Firma, Status, letzte Interaktion, Notizen.</td><td>Pipedrive</td></tr>
+    <tr><td><strong>Ticketing</strong></td><td>Support-Anfragen erfassen, Status tracken, Antworten dokumentieren. Eine einfache Request/Response-Liste.</td><td>E-Mail-Chaos</td></tr>
+    <tr><td><strong>Billing + Token-System</strong></td><td>Stripe-Integration mit Tier-basiertem Modell. Jedes Tier hat monatliche Token-Limits fuer KI-Nutzung. Zusaetzliche Token-Pakete koennen dazugekauft werden. Trial-Management, Conversion-Tracking, Kuendigung.</td><td>Manuelle Rechnungen</td></tr>
+    <tr><td><strong>Onboarding API</strong></td><td>Der Endpunkt fuer die Landing-Page: Template waehlen → Tenant erstellen → Stripe Session → Radar deployed.</td><td>Vertriebsgespraeche</td></tr>
+    <tr><td><strong>Transaktionssystem</strong> <span class="badge badge-gray">Prio 3</span></td><td>Nutzungsbasierte Abrechnung: Token-Verbrauch pro Tenant tracken, Tier-Upgrades anstossen, Zusatzpakete verkaufen. Die Grundlage fuer nachhaltiges Revenue-Wachstum.</td><td>—</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- API ABDECKUNG -->
+<!-- ============================================================ -->
+<section>
+  <h2>Datenbankzugriff — Warum direkt statt ueber die API?</h2>
+
+  <p>Die bisherige Planung sah vor, den MCP Server als Wrapper um die bestehende .NET REST API (v1, v2, MVC) zu bauen. Diese Idee wurde verworfen. Stattdessen greift die <strong>MCP-API direkt auf die trendradar PostgreSQL-Datenbank</strong> zu — dieselbe Datenbank, die auch das .NET Backend nutzt.</p>
+
+  <table>
+    <tr><th>Problem mit API-Wrapper</th><th>Loesung durch direkten DB-Zugriff</th></tr>
+    <tr><td>v1/v2/MVC-Chaos: drei verschiedene API-Stile, inkonsistente Endpoints</td><td>Eine saubere TypeScript-Codebase, die direkt SQL/ORM-Queries ausfuehrt</td></tr>
+    <tr><td>Content Types + Ratings nur ueber MVC Wizard (HTML Form-Posts, Session-Cookies)</td><td>Direkt in die DB-Tabellen schreiben — kein Form-Post-Hacking noetig</td></tr>
+    <tr><td>JWT Token-Refresh alle 5 Minuten, fehleranfaellig bei laengeren Operationen</td><td>Kein Token noetig — direkte DB-Verbindung mit Connection Pool</td></tr>
+    <tr><td>250 Endpoints in drei API-Versionen verstehen und mappen</td><td>DB-Schema verstehen und nur die benoetigten Tabellen ansprechen</td></tr>
+    <tr><td>Aenderungen im .NET Backend koennten MCP-Calls brechen</td><td>DB-Schema ist stabiler als API-Endpoints, Schema-Aenderungen sind sichtbar</td></tr>
+  </table>
+
+  <div class="callout callout-green">
+    <strong>Kernprinzip:</strong> Die MCP-API und das .NET Backend arbeiten parallel auf derselben PostgreSQL-Datenbank. Wenn die MCP-API einen Steckbrief schreibt, sieht der Kunde ihn sofort im React Frontend — weil das .NET Backend dieselbe Datenbank liest. Keine Synchronisation noetig, keine Duplikation, kein Cache-Problem.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ZUSAMMENSPIEL -->
+<!-- ============================================================ -->
+<section>
+  <h2>Vom Erstkontakt zum begeisterten CIN User</h2>
+
+  <p>Die Branchen-Radars werden von den CIN-Foundern als Templates vorbereitet und gepflegt. Was automatisiert ablaeuft, ist der Weg vom ersten Kontakt eines Leads bis zum produktiven Kunden — ohne Vertriebsgespraech, ohne Implementierungsprojekt:</p>
+
+  <div style="background: linear-gradient(135deg, #f0f4f8, #e8ecf0); border-radius: 10px; padding: 28px; margin: 20px 0; line-height: 2;">
+    <strong style="color:var(--orange);">1.</strong> Ein potenzieller Kunde entdeckt CIN und besucht die Landing-Page. Er sieht die verfuegbaren Branchen-Templates — zum Beispiel <em>"Pharma Innovation Radar"</em> — und waehlt das passende aus.<br>
+    <strong style="color:var(--orange);">2.</strong> Er gibt seine Kreditkarte ein. Stripe berechnet 199 CHF fuer den ersten Monat. Das Mini CRM erfasst den neuen Kunden automatisch.<br>
+    <strong style="color:var(--teal);">3.</strong> Die Operations Platform erstellt einen eigenen Tenant fuer den Kunden mit allen Grundeinstellungen.<br>
+    <strong style="color:var(--purple);">4.</strong> Das vordefinierte Branchen-Template wird automatisch in den neuen Tenant deployed — die MCP-API schreibt alles direkt in die trendradar-Datenbank:<br>
+    <span style="padding-left: 30px; color: var(--blue);">4a.</span> Die Content Types werden direkt in der DB angelegt: <em>Trends, Technologien, Startups, Regulierung</em><br>
+    <span style="padding-left: 30px; color: var(--blue);">4b.</span> Die Rating-Strukturen werden direkt geschrieben: <em>Relevanz, Reifegrad, Impact-Potenzial</em><br>
+    <span style="padding-left: 30px; color: var(--blue);">4c.</span> 15 branchenspezifische Trend-Steckbriefe mit Bildern und Beschreibungen werden in die DB eingespielt<br>
+    <span style="padding-left: 30px; color: var(--blue);">4d.</span> Die Relations zwischen verwandten Trends werden gesetzt<br>
+    <span style="padding-left: 30px; color: var(--blue);">4e.</span> Eine vorbereitete Rating-Kampagne steht bereit<br>
+    <span style="padding-left: 30px; color: var(--blue);">4f.</span> 4-5 Action Boards sind konfiguriert<br>
+    <strong style="color:var(--green);">5.</strong> Der Kunde erhaelt seine Zugangsdaten und arbeitet <strong>innerhalb von 5 Minuten</strong> mit einem vollstaendig eingerichteten Innovations-Radar. Von hier aus kann er seine eigenen Trends ergaenzen, sein Team einladen und die Rating-Kampagne starten. ✓
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- STRATEGISCHE VORTEILE -->
+<!-- ============================================================ -->
+<section>
+  <h2>Strategische Vorteile — Warum diese Architektur funktioniert</h2>
+
+  <h3>Kunde im Zentrum — vom ersten Klick bis zum Upsell</h3>
+  <p>Das integrierte System stellt sicher, dass kein Lead verloren geht und jeder Kunde optimal betreut wird — ohne dass dafuer ein Vertriebsteam noetig ist.</p>
+
+  <table>
+    <tr><th>Phase</th><th>Was passiert</th><th>Wie die Plattform hilft</th></tr>
+    <tr>
+      <td><strong>Akquise</strong></td>
+      <td>Ein Lead findet die Landing-Page, waehlt sein Branchen-Template und startet den Trial.</td>
+      <td>Das <strong>Mini CRM</strong> erfasst den Lead automatisch. Kein manuelles Eintragen, kein Pipedrive, kein Vertriebsgespraech. Der gesamte Prozess vom ersten Besuch bis zur Zahlung ist automatisiert.</td>
+    </tr>
+    <tr>
+      <td><strong>Onboarding</strong></td>
+      <td>Der KI-Bot fuehrt den Kunden durch die Ersteinrichtung und erfragt seine spezifischen Trends.</td>
+      <td>Der <strong>MCP Server</strong> setzt den Radar vollautomatisch auf. Innerhalb von 5 Minuten hat der Kunde ein funktionierendes System — kein Implementierungsprojekt, keine Consultants.</td>
+    </tr>
+    <tr>
+      <td><strong>Betreuung</strong></td>
+      <td>Der Kunde nutzt den Radar, hat Fragen oder Probleme.</td>
+      <td>Das <strong>Ticketing-System</strong> faengt Support-Anfragen strukturiert auf. Jede Anfrage ist nachvollziehbar, mit Status und Antwort-Historie. Keine Anfrage geht in der E-Mail-Flut unter.</td>
+    </tr>
+    <tr>
+      <td><strong>Expansion</strong></td>
+      <td>Der Kunde erkennt den Wert und moechte mehr — zusaetzliche User, weitere Trends, erweiterte Kampagnen.</td>
+      <td>Das <strong>Tier-System</strong> ermoeglicht strukturierte Upgrades. Jedes Tier hat definierte Token-Limits fuer KI-Nutzung. Wenn der Kunde mehr braucht, kann er einfach auf den naechsten Tier wechseln oder zusaetzliche Token-Pakete kaufen.</td>
+    </tr>
+  </table>
+
+  <h3>Automatisierte Lead-to-Revenue Pipeline</h3>
+  <p>Der groesste Vorteil gegenueber dem bisherigen Modell: <strong>Neue Leads koennen komplett automatisiert zum Abschluss geleitet werden.</strong> Es gibt keinen manuellen Uebergabepunkt mehr zwischen Marketing, Vertrieb und Onboarding. Die gesamte Kette — vom ersten Klick ueber die Zahlung bis zum eingerichteten Radar — laeuft ohne menschlichen Eingriff.</p>
+
+  <div style="background: linear-gradient(135deg, #f0f4f8, #e8ecf0); border-radius: 10px; padding: 24px; margin: 20px 0;">
+    <div class="flow-line">
+      <div class="flow-step" style="background:var(--orange);">Landing-Page<br><span style="font-size:0.8em; opacity:0.8;">Lead kommt an</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:var(--orange);">CRM<br><span style="font-size:0.8em; opacity:0.8;">Automatisch erfasst</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:var(--gray);">Stripe<br><span style="font-size:0.8em; opacity:0.8;">199 CHF</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:var(--purple);">MCP<br><span style="font-size:0.8em; opacity:0.8;">Radar deployed</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:var(--green);">Kunde<br><span style="font-size:0.8em; opacity:0.8;">Arbeitet sofort</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:var(--teal);">Upsell<br><span style="font-size:0.8em; opacity:0.8;">Hoehere Tiers</span></div>
+    </div>
+  </div>
+
+  <h3>Revenue-Wachstum durch Tier- und Token-Modell</h3>
+  <p>Sobald die ersten Kunden zahlen, geht es darum, sie auf hoehere Tiers zu entwickeln und weitere User innerhalb der Organisation abzuschliessen. Die Operations Platform unterstuetzt das durch ein transparentes Verbrauchsmodell:</p>
+
+  <table>
+    <tr><th>Tier</th><th>Preis/Monat</th><th>Inkludiert</th><th>Zielgruppe</th></tr>
+    <tr>
+      <td><strong>Starter</strong></td>
+      <td>199 CHF</td>
+      <td>15 Trends · 1 Kampagne · 5 Action Boards · Basis-Token-Kontingent</td>
+      <td>Einzelpersonen, erste Validierung</td>
+    </tr>
+    <tr>
+      <td><strong>Professional</strong></td>
+      <td>TBD</td>
+      <td>Unbegrenzte Trends · Mehrere Kampagnen · Erweitertes Token-Kontingent · Mehrere User</td>
+      <td>Kleine Innovationsteams</td>
+    </tr>
+    <tr>
+      <td><strong>Enterprise</strong></td>
+      <td>TBD</td>
+      <td>Alles unbegrenzt · Dedizierter Support · Custom Templates · Hoeheres Token-Limit</td>
+      <td>Grosse Organisationen</td>
+    </tr>
+    <tr>
+      <td><strong>Token-Pakete</strong></td>
+      <td>Ab TBD</td>
+      <td>Zusaetzliche KI-Token wenn das Monatskontingent aufgebraucht ist</td>
+      <td>Power-User in jedem Tier</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-green">
+    <strong>Der Hebel:</strong> Jeder Kunde startet guenstig (199 CHF) und waechst organisch in hoehere Tiers. Die Operations Platform trackt den Token-Verbrauch, erkennt Power-User und kann automatisiert Upgrade-Vorschlaege machen. Das Transaktionssystem (Prio 3) baut diese Grundlage spaeter zu einem vollstaendigen nutzungsbasierten Abrechnungsmodell aus.
+  </div>
+
+  <h3>Warum CRM und Ticketing integriert sein muessen</h3>
+  <p>Pipedrive war zu komplex und schwerfaellig. Separate Tools fuer CRM, Ticketing und Billing fuehren zu Medienbruechen — der Kunde existiert in drei Systemen, niemand hat das vollstaendige Bild. Mit einem <strong>kompakten, integrierten System</strong> aendert sich das:</p>
+  <ul>
+    <li><strong>Ein Datensatz pro Kunde</strong> — vom Lead ueber den Trial bis zum Enterprise-Kunden. Alles an einem Ort: Kontaktdaten, Vertrag, Tickets, Token-Verbrauch, Zahlungshistorie.</li>
+    <li><strong>Automatische Statusuebergaenge</strong> — ein Lead wird zum Trial-Kunden sobald er zahlt, wird zum aktiven Kunden nach dem Trial, wird zum Churn-Risiko wenn er den Radar nicht mehr nutzt.</li>
+    <li><strong>Support im Kontext</strong> — wenn ein Ticket reinkommt, sieht man sofort: Welcher Kunde, welcher Tier, wie lange dabei, was hat er zuletzt gemacht. Keine Rueckfragen, schnelle Hilfe.</li>
+    <li><strong>Datengetriebene Entscheidungen</strong> — wie viele Leads kommen rein, wie viele konvertieren, welche Branchen-Templates funktionieren am besten, wo haengen die Upgrades. Alles aus einer Quelle.</li>
+  </ul>
+</section>
+
+<!-- ============================================================ -->
+<!-- ZEITPLAN -->
+<!-- ============================================================ -->
+<section>
+  <h2>Zeitplan — Was wann fertig wird</h2>
+
+  <p>Die Umsetzung erfolgt in drei Phasen. Claude Code baut, Bruno und Mischa pruefen. Pro Session sind 15-30 Minuten Review durch einen Founder eingeplant.</p>
+
+  <div class="timeline">
+    <div class="timeline-col" style="background: linear-gradient(135deg, var(--purple), #6c3483);">
+      <div class="time">3-4 Wo</div>
+      <h4>Phase 1: MCP Server + MCP-API</h4>
+      <ul>
+        <li>Projekt-Setup mit MCP SDK</li>
+        <li>trendradar DB-Schema analysieren</li>
+        <li>MCP-API Layer (TypeScript, direkt DB)</li>
+        <li>Content Types + Ratings direkt in DB</li>
+        <li>Steckbriefe CRUD direkt in DB</li>
+        <li>Image Generation + Relations</li>
+        <li>Campaign + Workflow Tools</li>
+        <li>Testing gegen trendradar DB</li>
+      </ul>
+      <p style="margin-top:12px; opacity:0.8; font-size:0.85em;">~20-25 Sessions</p>
+    </div>
+    <div class="timeline-col" style="background: linear-gradient(135deg, var(--teal), #0e6655);">
+      <div class="time">1-2 Wo</div>
+      <h4>Phase 2: Operations Platform</h4>
+      <ul>
+        <li>Eigene Ops-DB Schema + Setup</li>
+        <li>Tenant-Lifecycle API</li>
+        <li>Template-Katalog</li>
+        <li>Mini CRM · Ticketing</li>
+        <li>Billing-Grundlage</li>
+        <li>MCP Tools fuer Ops</li>
+      </ul>
+      <p style="margin-top:12px; opacity:0.8; font-size:0.85em;">~8-12 Sessions</p>
+    </div>
+    <div class="timeline-col" style="background: linear-gradient(135deg, var(--green), #1a7a3a);">
+      <div class="time">1-2 Wo</div>
+      <h4>Phase 3: Onboarding + Stripe</h4>
+      <ul>
+        <li>Stripe Integration</li>
+        <li>Onboarding API</li>
+        <li>Landing-Page</li>
+        <li>Auto-Provisioning Flow</li>
+      </ul>
+      <p style="margin-top:12px; opacity:0.8; font-size:0.85em;">~8-12 Sessions</p>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Phase</th><th>Sessions mit Claude</th><th>Kalenderzeit</th><th>Ergebnis</th></tr>
+    <tr><td>Phase 1: MCP Server + MCP-API</td><td>20-25</td><td>3-4 Wochen</td><td>MCP Server mit eigener MCP-API, direkter DB-Zugriff, 14 Tools</td></tr>
+    <tr><td>Phase 2: Operations Platform</td><td>8-12</td><td>1-2 Wochen</td><td>Laufende Ops Platform (CRM, Tickets, Billing, Tenants)</td></tr>
+    <tr><td>Phase 3: Onboarding + Stripe</td><td>8-12</td><td>1-2 Wochen</td><td>Self-Service Onboarding mit Stripe live</td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>36-49</strong></td><td><strong>5-8 Wochen</strong></td><td><strong>Komplett lauffaehiges System</strong></td></tr>
+  </table>
+
+  <div class="callout callout-blue">
+    Eine <strong>"Session"</strong> entspricht einer Claude Code Sitzung mit typisch 1-3 Stunden effektiver Arbeit. Phase 1 ist laenger, weil das trendradar DB-Schema gruendlich analysiert und eine eigene API-Schicht gebaut werden muss. Bei 2-3 Sessions pro Tag ist der Gesamtzeitraum von 5-8 Kalenderwochen realistisch. Die Infrastrukturkosten waehrend der Bauphase betragen ca. 235 CHF pro Monat.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- RISIKEN -->
+<!-- ============================================================ -->
+<section>
+  <h2>Abhaengigkeiten und Risiken</h2>
+  <table>
+    <tr><th>Risiko</th><th>Auswirkung</th><th>Mitigierung</th></tr>
+    <tr><td>Paralleler DB-Zugriff durch MCP-API und .NET Backend</td><td>Schema-Verstaendnis und Datenkonsistenz sind kritisch — beide Systeme schreiben in dieselbe DB</td><td>DB-Schema gruendlich analysieren, Constraints und Trigger beachten, Transaktionen korrekt nutzen</td></tr>
+    <tr><td>Keine trendradar Dev-Instanz</td><td>MCP-API kann nicht gegen eine Testdatenbank entwickelt werden</td><td>Dev-Instanz aufsetzen oder bestehende Umgebung nutzen</td></tr>
+    <tr><td>Kein Stripe-Account</td><td>Billing kann nicht getestet werden</td><td>Stripe Test-Mode verwenden (kostenlos)</td></tr>
+    <tr><td>Bestandskunden-Migration</td><td>Bestehende Kunden muessen weiter funktionieren</td><td>.NET Backend laeuft unveraendert weiter, MCP-API ist additiv</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- OFFENE FRAGEN -->
+<!-- ============================================================ -->
+<section>
+  <h2>Offene Fragen — vor dem Start zu klaeren</h2>
+  <div class="callout callout-orange">
+    <ol style="padding-left: 20px; line-height: 2.2;">
+      <li><strong>Zugang zur trendradar PostgreSQL-Datenbank</strong> (Dev-Instanz) fuer die MCP-API-Entwicklung? Connection-String, Schema-Dokumentation falls vorhanden.</li>
+      <li><strong>Welche Branche soll das erste Template werden?</strong> Ein konkretes Beispiel (z.B. Pharma, FinTech, Energie) wird als Pilot gebraucht.</li>
+      <li><strong>Habt ihr bereits einen Stripe-Account?</strong> Falls nicht, kann einer im Test-Mode eingerichtet werden.</li>
+      <li><strong>Braucht die Operations Platform eine eigene UI?</strong> Oder reicht es, wenn sie ueber API und Claude bedient wird?</li>
+    </ol>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  CIN 3.0 — Architektur-Vision &amp; Fahrplan | Erstellt am 30.05.2026 mit Claude Code | Basierend auf Founder-Meeting vom 29.05.2026
+</footer>
+
+</body>
+</html>

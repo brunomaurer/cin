@@ -1,0 +1,31 @@
+{
+	"nodes":[
+		{"id":"mcp","type":"text","text":"## MCP Server\n**TypeScript / Node.js**\n\nMCP-API mit direktem DB-Zugriff\n\nTools:\n- Tenant aufsetzen (via Ops Platform)\n- Content Types & Ratings erstellen\n- Steckbriefe erfassen + Bilder\n- Relations, Kampagnen, Workflows","x":-300,"y":-320,"width":340,"height":300,"color":"6"},
+		{"id":"ops","type":"text","text":"## CIN Operations Platform\n**TypeScript / Node.js**\n\n- Tenant-Lifecycle (CRUD, Billing)\n- Mini CRM (Leads, Kunden)\n- Ticketing (Support)\n- Request/Response Tracking\n- Template-Katalog (Branchen)\n- Stripe Integration (199 CHF)","x":-300,"y":40,"width":340,"height":320,"color":"3"},
+		{"id":"onboarding","type":"text","text":"## Onboarding Page\nTemplate-Auswahl\nKreditkarte\nSelf-Service","x":-700,"y":-320,"width":260,"height":180,"color":"5"},
+		{"id":"phase1","type":"text","text":"## Phase 1 (3-4 Wochen)\nMCP Server + MCP-API\n- DB-Schema verstehen\n- Content Types erstellen (direkt DB)\n- Steckbriefe CRUD\n- Bilder generieren\n- Relations + Kampagnen","x":500,"y":-280,"width":300,"height":260,"color":"6"},
+		{"id":"phase2","type":"text","text":"## Phase 2 (1-2 Wochen)\nOperations Platform\n- Eigene Ops DB\n- Tenant CRUD\n- Template-Katalog\n- Mini CRM\n- Ticketing","x":500,"y":20,"width":300,"height":300,"color":"3"},
+		{"id":"lead","type":"text","text":"## Lead / Kunde\nOnepage Onboarding\nTemplate waehlen\n199 CHF/Monat","x":-700,"y":-660,"width":260,"height":160,"color":"4"},
+		{"id":"react","type":"text","text":"## trendradar Frontend\n**React 19 / Chakra v3 / Vite**\nBestehendes UI (Note B+)\nKunden-Facing","x":-960,"y":440,"width":320,"height":100,"color":"5"},
+		{"id":"dotnet","type":"text","text":"## trendradar .NET Backend\n**Bestehendes Backend**\n\nv2: Explorer, Workflows, Campaigns\nv1: Relations, Image Gen, Widgets\nMVC: Content Types, Ratings\n\n87 Controller / ~250 Endpoints","x":-1120,"y":0,"width":320,"height":200,"color":"1"},
+		{"id":"db_trendradar","type":"text","text":"## trendradar PostgreSQL\nGemeinsame Datenbank\nMulti-Tenant\n\nMCP-API + .NET Backend\nlesen/schreiben beide hier","x":-660,"y":440,"width":320,"height":120,"color":"1"},
+		{"id":"claude","type":"text","text":"## Claude / AI\nOrchestrator\nSteuert alles via MCP\nBranchen-Radars aufsetzen","x":-220,"y":-760,"width":260,"height":160,"color":"6"},
+		{"id":"founder","type":"text","text":"## Founder\nBruno / Mischa / Alex / Urs\nReview, Specs, Kundenkontakt","x":200,"y":-500,"width":260,"height":140,"color":"4"},
+		{"id":"db_ops","type":"text","text":"## Operations DB\nEigene PostgreSQL\nTenants, CRM, Tickets, Billing\n(Separate DB von trendradar)","x":-300,"y":460,"width":340,"height":100,"color":"0"},
+		{"id":"stripe","type":"text","text":"## Stripe\nPayment\n199 CHF/Monat Trial","x":230,"y":360,"width":200,"height":80,"color":"0"},
+		{"id":"phase3","type":"text","text":"## Phase 3 (1-2 Wochen)\nOnboarding + Stripe\n- Onepage Landing\n- Stripe Integration\n- Auto-Provisioning\n- MCP → Ops verbinden","x":500,"y":370,"width":300,"height":260,"color":"5"}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"lead","fromSide":"bottom","toNode":"onboarding","toSide":"top","label":"besucht"},
+		{"id":"e2","fromNode":"onboarding","fromSide":"bottom","toNode":"ops","toSide":"left","label":"erstellt Tenant"},
+		{"id":"e3","fromNode":"claude","fromSide":"bottom","toNode":"mcp","toSide":"top","label":"steuert via MCP"},
+		{"id":"e4","fromNode":"founder","fromSide":"top","toNode":"claude","toSide":"right","label":"gibt Anweisungen"},
+		{"id":"e5","fromNode":"mcp","fromSide":"bottom","toNode":"db_trendradar","toSide":"top","label":"direkter DB-Zugriff"},
+		{"id":"e6","fromNode":"mcp","fromSide":"bottom","toNode":"ops","toSide":"top","label":"Tenant-Mgmt"},
+		{"id":"e7","fromNode":"ops","fromSide":"bottom","toNode":"db_ops","toSide":"top","label":"CRUD"},
+		{"id":"e8","fromNode":"ops","fromSide":"right","toNode":"stripe","toSide":"left","label":"Payment"},
+		{"id":"e9","fromNode":"dotnet","fromSide":"bottom","toNode":"db_trendradar","toSide":"top","label":"liest/schreibt"},
+		{"id":"e10","fromNode":"dotnet","fromSide":"bottom","toNode":"react","toSide":"top","label":"served"},
+		{"id":"e11","fromNode":"ops","fromSide":"left","toNode":"dotnet","toSide":"right","label":"Tenant provisionieren"}
+	]
+}

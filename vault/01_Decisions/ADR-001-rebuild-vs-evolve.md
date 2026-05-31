@@ -22,7 +22,7 @@ Neues, schlankes Produkt mit Kern-Features: Trend-Radar, Ideation, KI-native Kam
 
 **Siehe:** [[../05_Analyse/Weg-B-Greenfield.md]]
 
-### Option C — CIN einstampfen
+### Option C — CIN auflösen
 
 Gesellschaft aufloesen, keine weitere Investition.
 
@@ -34,6 +34,12 @@ Gesellschaft aufloesen, keine weitere Investition.
 4. Risiko: Was passiert wenn es schiefgeht?
 5. Bestehende Kunden: Wie sichern wir die 60k Umsatz?
 
-## Entscheidung
+## Entscheidung (29.05.2026)
 
-> *Wird am 29.05.2026 getroffen.*
+**Weiterführen.** trendradar wird als Fundament beibehalten und mit MCP Server + Operations Platform erweitert.
+
+- MCP Server als AI-Steuerung fuer automatisiertes Aufsetzen von Branchen-Radars
+- Eigene Operations Platform fuer Tenant-Management, CRM, Ticketing, Billing
+- Self-Service Onboarding: Template waehlen → 99 CHF → fertiger Radar
+- Stack: TypeScript / Node.js
+- Siehe: [[../02_Specs/MCP-Server-und-Operations-Platform]]

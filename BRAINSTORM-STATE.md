@@ -21,9 +21,9 @@ Bruno hat im Chat vom 2026-05-25 einen **Personal Access Token** für Azure DevO
 | **Urs** | Marketing / GTM | — (kein Code-Footprint) |
 | **Bruno** (du) | „Software bauen (mit Claude Code)" laut Memo | Stratege, schreibt das Memo, will mit Mischa bauen |
 | **Mischa** | „Software bauen" (laut Bruno im Chat) | — (kein Code-Footprint) |
-| **Alexander** (`alex.st`) | Im Memo *nicht* explizit als Dev genannt | **4575 von 5510 Commits = 83 %.** Hat das React-Frontend Feb 2025 neu aufgesetzt. **Der eigentliche Maker des bestehenden Produkts.** |
+| **Alexander** | Vertrieb / Operations | Kein Dev, kein Code-Footprint |
 
-→ Diese Diskrepanz ist der zentrale offene Punkt (siehe §4).
+→ Kein Founder hat Code geschrieben. `alex.st` ist ein externer Entwickler (Haupt-Dev, 83% der Commits), nicht Alexander der Founder.
 
 ---
 
@@ -31,7 +31,7 @@ Bruno hat im Chat vom 2026-05-25 einen **Personal Access Token** für Azure DevO
 
 | Pfad | Was | Stack | Status |
 |---|---|---|---|
-| `C:\Dev\trendradar` | **Das echte 3-Jahre-SaaS** (5510 Commits seit Feb 2022, letzter 22.05.2026 von Alexander) | **.NET 6** + PostgreSQL + custom column-encryption + **React 19/Chakra v3/Vite 7/React Query + Redux Toolkit** | aktiv, geklont, analysiert |
+| `C:\Dev\trendradar` | **Das echte 3-Jahre-SaaS** (5510 Commits seit Feb 2022, letzter 22.05.2026 von alex.st) | **.NET 6** + PostgreSQL + custom column-encryption + **React 19/Chakra v3/Vite 7/React Query + Redux Toolkit** | aktiv, geklont, analysiert |
 | `C:\Dev\CinRadar` | Prototyp der AI-Vision (Apr 2026, ~86 Commits in 4 Tagen) | React/Vite + Vercel + Upstash Redis + Anthropic | Wegwerf-Prototyp · keine Auth/Multi-Tenancy |
 | `C:\Dev\CIN\Docs` | Strategie + Pricing-Calculator | `CIN_3.0_Strategie.pptx` (14 Slides) + `CIN_3.0_Calculator.html` | Vision-Memo, schlägt Vercel/Supabase Greenfield + „100 % Bruno" vor |
 
@@ -54,7 +54,7 @@ Repo-Remote (Token-frei): `https://dev.azure.com/crossinnovationnetwork/trendrad
 - **Größe:** ~68k LOC Business-Logic (596k inkl. EF-Migrationen)
 
 ### Frontend (trendradar/CIN.UI/react-app)
-- **Modern — initialisiert Feb 2025 von `alex.st`.** Letzter Commit 20.05.2026.
+- **Modern — initialisiert Feb 2025 von `alex.st` (externer Haupt-Dev).** Letzter Commit 20.05.2026.
 - **Stack:** React 19, TypeScript strict, **Vite 7**, **Chakra UI v3** (aktiv migrierend weg von MUI 7), **React Query 5** + Redux Toolkit, **axios + axios-retry + Bottleneck + Opossum** (Retry/Rate-Limit/Circuit-Breaker)
 - **i18n** EN/DE via i18next, **Forms** react-hook-form + Zod
 - **Struktur:** `@core/` (UI-Kit, axios, theme, hooks), `features/` (16 Feature-Module, je mit `api/`+`hooks/`+`store/`+`components/`), `pages/` (Route-Shells), `app/routes.ts`
@@ -64,7 +64,7 @@ Repo-Remote (Token-frei): `https://dev.azure.com/crossinnovationnetwork/trendrad
 
 ### Commit-Verteilung
 ```
-alex.st         4575   ← Founder, 83 %
+alex.st         4575   ← Externer Entwickler (Haupt-Dev), 83 %
 TC-Nikolay       395   ← extern (vermutlich Pecode/TwinCore/CoxIT-Cluster)
 Kolya Goroshko   262   ← extern
 vika.k           129
@@ -80,13 +80,15 @@ igor.golovko      11
 
 **Das Strategie-Memo geht von „komplett neu auf Vercel/Supabase, 100 % Bruno mit Claude Code" aus. Der Code zeigt das Gegenteil:**
 
-1. Das **Frontend ist State-of-the-Art** (React 19/Chakra v3/Vite, Feb 2025 von Alexander gebaut). Es neu zu bauen wäre Wertvernichtung.
+1. Das **Frontend ist State-of-the-Art** (React 19/Chakra v3/Vite, Feb 2025 von alex.st gebaut). Es neu zu bauen wäre Wertvernichtung.
 2. Das **Backend ist die echte Altlast** (.NET 6 EOL, God-Classes, 2,7 % Tests, custom Crypto) — aber enthält **3 Jahre Domänenwissen** (~50 Entities/165 Services). Ein From-scratch-Rewrite davon ist die klassische Rewrite-Falle.
 3. **AI ist bereits integriert** (Interview-Campaigns). Der Sprung zur „permanenten" AI ist **eine Evolution der bestehenden Agent-Runtime**, nicht Greenfield.
-4. Der Pain „externe Devs fressen die Marge" löst man **durch In-sourcing + AI-gestützte Modernisierung**, nicht durch Wegwerfen. Alexander hat den Externen-Anteil längst zurückgedrängt (83 % seiner Commits).
-5. **Greenfield bedeutet Alexander-Sidelining** — politisch wie produktiv riskant, da er sowohl Founder als auch Code-Owner ist.
+4. Der Pain „externe Devs fressen die Marge" löst man **durch In-sourcing + AI-gestützte Modernisierung**, nicht durch Wegwerfen. alex.st (externer Haupt-Dev) hat 83% der Commits gemacht.
+5. **Greenfield bedeutet Abhängigkeit vom externen Haupt-Dev alex.st geht verloren** — das gesamte Domänenwissen steckt bei den externen Devs, nicht bei den Foundern.
 
-→ Die rebuild-vs-evolve-Entscheidung **muss vor allem anderen fallen** und ist eine **Founder-Entscheidung mit Alexander am Tisch**.
+**Wichtig:** alex.st ist NICHT Alexander der Founder. Alexander (Founder) ist Vertrieb/Operations. alex.st ist ein externer Entwickler, der zusammen mit den ukrainischen Devs die Plattform gebaut hat. Kein Founder hat Code geschrieben.
+
+→ Die rebuild-vs-evolve-Entscheidung **muss vor allem anderen fallen** und ist eine **Founder-Entscheidung (alle 4 Founder am Tisch)**.
 
 ---
 
@@ -94,8 +96,8 @@ igor.golovko      11
 
 | Option | Was es bedeutet | Pro | Contra |
 |---|---|---|---|
-| **A · Evolve / Strangler-Fig** ⭐ *Empfehlung Claude* | Modernes FE übernehmen → .NET-Backend modernisieren (.NET 8/9, Tests, God-Classes zerlegen) + in-sourcen → permanente AI-Agent-Runtime als **neuen Service daneben** → Modul für Modul A→B→C→D migrieren | Behält 3 Jahre Domäne · billigster/schnellster Weg · Alexander zentral · echtes Greenfield nur dort wo's Sinn macht (AI-Runtime) | Kein „strategischer Neuanfang" · .NET-Modernisierung braucht Disziplin |
-| **B · Greenfield (wie Memo)** | Komplett neu auf Vercel/Supabase/React, trendradar wird abgelöst | Stack-Freiheit · klares Schnitt-Datum | **Rewrite-Falle** · höchste Kosten · wirft modernes FE weg · Alexander sidelined · Strategie sagt selbst „kein Reset" — widerspricht sich |
+| **A · Evolve / Strangler-Fig** ⭐ *Empfehlung Claude* | Modernes FE übernehmen → .NET-Backend modernisieren (.NET 8/9, Tests, God-Classes zerlegen) + in-sourcen → permanente AI-Agent-Runtime als **neuen Service daneben** → Modul für Modul A→B→C→D migrieren | Behält 3 Jahre Domäne · billigster/schnellster Weg · behält Beziehung zu externem Haupt-Dev (alex.st) · echtes Greenfield nur dort wo's Sinn macht (AI-Runtime) | Kein „strategischer Neuanfang" · .NET-Modernisierung braucht Disziplin |
+| **B · Greenfield (wie Memo)** | Komplett neu auf Vercel/Supabase/React, trendradar wird abgelöst | Stack-Freiheit · klares Schnitt-Datum | **Rewrite-Falle** · höchste Kosten · wirft modernes FE weg · Domänenwissen der externen Devs geht verloren · Strategie sagt selbst „kein Reset" — widerspricht sich |
 | **C · Hybrid** | Neues AI-natives Frontend (CinRadar-Stil) + bestehendes .NET-Backend mit AI-Layer umhüllen | Freie UX-Reinvention · behält Backend/Daten | FE-Doppelarbeit (Alex' FE ist schon modern) · zwei Frontends parallel pflegen bis Cutover |
 | **D · Erst Decision-Note** | Wir entscheiden nichts, sondern bereiten ADR-001 für Founder-Sitzung auf | Saubere Governance · Alexander wird einbezogen | Verzögerung, bis Sitzung steht |
 
@@ -106,7 +108,7 @@ igor.golovko      11
 ### Drei Agenten-Ebenen sauber trennen
 | Ebene | Wer | Was | Orchestrierung |
 |---|---|---|---|
-| **A · Build-Agents** | Bruno + Mischa (+ Alexander) | CIN *bauen* | **ruflo** + Claude Code |
+| **A · Build-Agents** | Bruno + Mischa | CIN *bauen* | **ruflo** + Claude Code |
 | **B · Produkt-Agents** | Kernprodukt | Was Kunden *kaufen* — Trend-Mining, Insight, Interview, Validation … | Eigene Runtime-Architektur (≠ ruflo). Heute existiert die Interview-Variante — Basis für „permanent AI". |
 | **C · GTM-Agents** | Urs | Content, GEO, Funnel/Webinar-Automation, AI-Chat statt Sales | HubSpot + Stripe + Cal.com + Workflow-Agents |
 
@@ -142,7 +144,7 @@ In der Reihenfolge:
    - .NET-Modernisierungs-Plan: .NET 8/9-Upgrade, Test-Aufbau, God-Class-Decomposition, EF-Version-Fix
    - Erste Spec für Modul A im Vault
 4. **Obsidian-Vault initialisieren** (Struktur §6) — als Git-Repo, z. B. `C:\Dev\CIN\vault`.
-5. **ruflo-Swarm** erst danach starten (Modul-Ownership-Modell: Bruno → AI-Runtime, Mischa → ein Modul, Alexander → Plattform).
+5. **ruflo-Swarm** erst danach starten (Modul-Ownership-Modell: Bruno → AI-Runtime, Mischa → ein Modul).
 
 ---
 

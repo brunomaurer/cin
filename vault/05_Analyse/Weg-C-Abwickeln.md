@@ -1,4 +1,4 @@
-# Weg C — CIN einstampfen
+# Weg C — CIN Abwickeln
 
 > Analyse: 2026-05-28
 

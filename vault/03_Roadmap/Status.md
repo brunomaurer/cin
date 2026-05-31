@@ -2,22 +2,36 @@
 
 > Letzte Aktualisierung: 2026-05-28
 
-## Now (diese Woche)
+## Now (KW 23, 2026)
 
-- [ ] **ADR-001 entscheiden** — Rebuild vs. Evolve vs. Einstampfen (Meeting 29.05.2026)
+- [x] **ADR-001 entschieden** — Weiterfuehren (Meeting 29.05.2026)
 - [ ] **Azure DevOps PAT revoken** — Sicherheits-Action-Item
 - [x] Code-Tiefenanalyse trendradar durchgefuehrt
 - [x] Obsidian-Vault initialisiert
 - [x] Entscheidungsvorlage fuer Meeting erstellt
+- [x] API-Abdeckung analysiert (Ergebnis: direkter DB-Zugriff statt API-Wrapping)
+- [ ] **MCP Server + Ops Platform Spec finalisieren** (Brainstorming laeuft)
+- [ ] Offene Fragen klaeren (Dev-Instanz, Branchen-Templates, Stripe)
 
-## Next (nach Entscheidung)
+## Next (Phase 1: MCP Server + MCP-API, ~3-4 Wochen)
 
-- [ ] Bei Weg B: Kern-Features mit Kunden validieren (was nutzen sie wirklich?)
-- [ ] Bei Weg B: Tech-Stack festlegen (Founder-Sitzung)
-- [ ] Bei Weg B: Erste Spec in `02_Specs/` schreiben
-- [ ] Bei Weg A: .NET 8 Upgrade planen
-- [ ] Marketing/Vertrieb-Strategie mit Urs + Alexander abstimmen
+- [ ] MCP Server Projekt aufsetzen (TypeScript, MCP SDK)
+- [ ] trendradar PostgreSQL DB-Schema verstehen + DB-Client einrichten
+- [ ] Content Tools (CRUD Steckbriefe direkt via DB)
+- [ ] Content Type + Rating Tools (direkt via DB, kein MVC Form-Post-Hacking)
+- [ ] Image Generation + Relations Tools (direkt via DB)
+- [ ] Campaign + Workflow Tools (direkt via DB)
+- [ ] Testing gegen trendradar PostgreSQL (Konsistenz mit .NET Backend pruefen)
+
+## Later (Phase 2+3)
+
+- [ ] Operations Platform (Tenant-Lifecycle, CRM, Ticketing, Template-Katalog)
+- [ ] Stripe Integration + Onboarding Page
+- [ ] Erstes Branchen-Template erstellen und testen
+- [ ] Marketing/Vertrieb-Strategie mit Urs + Alexander
 
 ## Blocked
 
-- Alles weitere → wartet auf Founder-Entscheidung ADR-001
+- MCP Server Testing → braucht Zugang zur trendradar PostgreSQL (Dev/Staging)
+- Stripe Integration → braucht Stripe Account
+- Template-Deployment → braucht definiertes erstes Branchen-Template
