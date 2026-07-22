@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIN Operations Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--white:#FFF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g700:#374151;--g800:#1F2937;--g900:#111827;--a50:#EFF9FC;--a100:#D8F1F8;--a200:#B3E4F1;--a400:#48B8DD;--a500:#2AACDB;--a600:#1D8AB5;--a700:#1A6F95;--ok50:#ECFDF5;--ok100:#D1FAE5;--ok400:#34D399;--ok500:#10B981;--ok600:#059669;--w50:#FFFBEB;--w100:#FEF3C7;--w400:#FBBF24;--w500:#F59E0B;--w600:#D97706;--d50:#FEF2F2;--d100:#FEE2E2;--d400:#F87171;--d500:#EF4444;--d600:#DC2626;--p50:#F5F3FF;--p100:#EDE9FE;--p400:#A78BFA;--p500:#8B5CF6;--sh:0 2px 8px -2px rgba(0,0,0,.06),0 4px 16px -4px rgba(0,0,0,.04);--sh2:0 4px 16px -4px rgba(0,0,0,.08),0 8px 32px -8px rgba(0,0,0,.04);--sh3:0 8px 32px -8px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:var(--g50);color:var(--g800);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;height:100vh;display:flex;overflow:hidden}
+h1,h2,h3,h4{letter-spacing:-.025em;color:var(--g900)}button,input,select,textarea{font:inherit;color:inherit}button{background:none;border:0;cursor:pointer}
+
+/* Btn */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:10px 18px;font-weight:600;font-size:14px;transition:all .2s;cursor:pointer;border:none}
+.btn-p{background:var(--a500);color:#fff}.btn-p:hover{background:var(--a600);box-shadow:0 4px 16px -4px rgba(42,172,219,.3)}
+.btn-s{background:#fff;color:var(--a600);border:2px solid var(--a200)}.btn-s:hover{border-color:var(--a400);background:var(--a50)}
+.btn-g{background:transparent;color:var(--g600);padding:8px 14px;border-radius:8px;font-weight:500;font-size:13px}.btn-g:hover{background:var(--a50);color:var(--a600)}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:10px}
+.btn-ai{background:linear-gradient(135deg,var(--p400),var(--p500));color:#fff;border:none}.btn-ai:hover{filter:brightness(1.05)}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:10px;background:transparent;color:var(--g500);display:inline-flex;align-items:center;justify-content:center}.btn-icon:hover{background:var(--g100);color:var(--g700)}
+.btn-d{background:var(--d50);color:var(--d600);border:1px solid var(--d100)}.btn-d:hover{background:var(--d100)}
+
+/* Input */
+.input{width:100%;border-radius:12px;border:1px solid var(--g200);background:#fff;padding:10px 14px;color:var(--g900);font-size:14px;transition:all .2s;outline:none}
+.input::placeholder{color:var(--g400)}.input:focus{border-color:var(--a400);box-shadow:0 0 0 3px rgba(42,172,219,.2)}
+textarea.input{min-height:80px;resize:vertical}
+
+/* Chip */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.chip.ca{background:var(--a50);color:var(--a600)}.chip.cs{background:var(--ok50);color:var(--ok600)}.chip.cw{background:var(--w50);color:var(--w600)}.chip.cd{background:var(--d50);color:var(--d600)}.chip.cp{background:var(--p50);color:var(--p500)}.chip.cg{background:var(--g100);color:var(--g600)}
+
+/* Tag */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:default}
+.t-bl{background:#DBEAFE;color:#1D4ED8}.t-tl{background:var(--a100);color:var(--a700)}.t-gr{background:var(--ok100);color:#065F46}.t-yl{background:var(--w100);color:#92400E}.t-rd{background:var(--d100);color:#991B1B}.t-pr{background:var(--p100);color:#5B21B6}.t-gy{background:var(--g100);color:var(--g600)}.t-pk{background:#FCE7F3;color:#9D174D}.t-or{background:#FFEDD5;color:#9A3412}
+.tags-row{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.tag-add{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:6px;font-size:11px;color:var(--g400);border:1px dashed var(--g200);cursor:pointer;background:transparent;transition:all .12s}.tag-add:hover{border-color:var(--a400);color:var(--a600);background:var(--a50)}
+
+/* Tag Filter */
+.tf-bar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fff;border:1px solid var(--g100);border-radius:12px;margin-bottom:16px;flex-wrap:wrap}
+.tf-bar .tfl{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-right:4px}
+.tf{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--g200);background:#fff;color:var(--g500);transition:all .12s}
+.tf:hover{border-color:var(--a400);color:var(--a600)}.tf.on{background:var(--a500);color:#fff;border-color:var(--a500)}
+
+/* Card */
+.card{background:#fff;border:1px solid rgba(243,244,246,.6);border-radius:16px;box-shadow:var(--sh)}
+.card-h{padding:16px 20px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.card-h h3{font-size:14px;font-weight:600}
+
+/* Dot */
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot.ok{background:var(--ok500)}.dot.wn{background:var(--w500)}.dot.ht{background:var(--d500)}.dot.ac{background:var(--a500)}.dot.pr{background:var(--p400)}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;padding:10px 20px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g100);font-weight:600}
+.tbl td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--g100);color:var(--g700)}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:var(--g50);cursor:pointer}
+.tbl td strong{color:var(--g900);font-weight:600}.tbl .sub{color:var(--g400);font-size:12px}
+
+/* KPI */
+.kpi{position:relative;overflow:hidden;border-radius:16px;padding:20px;background:#fff;border:1px solid rgba(243,244,246,.6);box-shadow:var(--sh)}
+.kpi .l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.kpi .v{font-size:28px;font-weight:700;color:var(--g900);margin-top:6px}
+.kpi .c{font-size:12px;font-weight:500;margin-top:2px}.kpi .c.up{color:var(--ok500)}.kpi .c.dn{color:var(--d500)}
+
+/* Sidebar */
+.sb{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--g100);display:flex;flex-direction:column}
+.sb-hd{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--g100);height:64px}
+.sb-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--a400),var(--a600));display:grid;place-items:center;flex-shrink:0}
+.sb-nav{padding:10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.sb-sec{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--g400);padding:14px 12px 6px;font-weight:600}
+.sb-i{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:var(--g500);font-size:13.5px;font-weight:500;transition:all .15s;cursor:pointer}
+.sb-i:hover{background:var(--a50);color:var(--a600)}.sb-i.on{background:var(--a50);color:var(--a600);font-weight:600}
+.sb-b{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px}
+.sb-b.b{background:var(--a100);color:var(--a600)}.sb-b.r{background:var(--d100);color:var(--d600)}.sb-b.w{background:var(--w100);color:var(--w600)}
+.sb-u{padding:14px 18px;border-top:1px solid var(--g100);display:flex;align-items:center;gap:10px}
+.av{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--a400),var(--a600));display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+.av.lg{width:52px;height:52px;font-size:18px;border-radius:14px}
+
+/* Header */
+.hdr{display:flex;align-items:center;gap:12px;height:64px;padding:0 24px;background:rgba(255,255,255,.9);border-bottom:1px solid var(--g100);flex-shrink:0;backdrop-filter:blur(24px)}
+.sr-w{position:relative;flex:1;max-width:480px}
+.sr-w svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--g400)}
+.sr-w .input{padding-left:36px}
+
+/* Main */
+.mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ct{flex:1;overflow-y:auto;padding:24px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--g100);margin-bottom:16px}
+.tab{padding:10px 18px;font-size:13.5px;color:var(--g400);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;transition:all .15s}
+.tab:hover{color:var(--g700)}.tab.on{color:var(--a600);border-bottom-color:var(--a500);font-weight:600}
+
+/* Stage */
+.stg{display:flex;gap:8px}
+.stg-c{flex:1;padding:16px;border-radius:14px;background:var(--g50);border:1px solid var(--g100);text-align:left;cursor:pointer;transition:all .15s}
+.stg-c:hover{border-color:var(--g200);box-shadow:var(--sh)}.stg-c.on{border-color:var(--a400);background:var(--a50)}
+.stg-c .sl{display:flex;align-items:center;gap:6px;margin-bottom:6px}.stg-c .sl span{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.stg-c .sv{font-size:28px;font-weight:700;color:var(--g900)}.stg-c .ss{font-size:12px;color:var(--g400);margin-top:2px}
+.stg-ch{display:flex;align-items:center;color:var(--g300);flex-shrink:0}
+
+/* Kanban */
+.kb{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;min-height:500px}
+.kb::-webkit-scrollbar{height:6px}.kb::-webkit-scrollbar-thumb{background:var(--g200);border-radius:10px}
+.kc{min-width:280px;width:280px;flex-shrink:0;display:flex;flex-direction:column}
+.kc-h{padding:10px 12px;display:flex;align-items:center;gap:8px}
+.kc-h .t{font-size:13px;font-weight:600;color:var(--g900)}.kc-h .n{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--g100);color:var(--g500)}
+.kc-b{flex:1;display:flex;flex-direction:column;gap:8px}
+.kk{background:#fff;border:1px solid var(--g100);border-radius:14px;padding:14px;cursor:grab;transition:all .15s;box-shadow:var(--sh);user-select:none}
+.kk:hover{border-color:var(--g200);box-shadow:var(--sh2);transform:translateY(-1px)}.kk:active{cursor:grabbing}
+.kk.dragging{opacity:.4;transform:scale(.95);box-shadow:none}
+.kc.drag-over .kc-b{background:var(--a50);border-radius:14px;border:2px dashed var(--a400);min-height:80px}
+.kk .nm{font-weight:600;color:var(--g900);font-size:14px}.kk .co{color:var(--g400);font-size:12px;margin-top:2px}.kk .tg{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+
+/* Bar */
+.bar{position:relative;width:100%;height:6px;background:var(--g100);border-radius:999px;overflow:hidden}
+.bar .fl{position:absolute;left:0;top:0;bottom:0;border-radius:999px;transition:width .3s}
+
+/* Info Grid */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.ii{padding:14px;background:var(--g50);border-radius:12px;border:1px solid var(--g100)}
+.ii .l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;font-weight:600}.ii .v{font-size:14px;font-weight:500;color:var(--g900);margin-top:4px}
+
+/* Detail */
+.det{display:grid;grid-template-columns:1fr 360px;gap:24px}
+.bc{display:flex;align-items:center;gap:6px;color:var(--g400);font-size:12.5px;margin-bottom:12px}
+.bc button{color:var(--g500);display:inline-flex;align-items:center;gap:4px;font-weight:500}.bc button:hover{color:var(--a600)}
+
+/* Activity */
+.act{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--g100)}.act:last-child{border-bottom:none}
+.act .t{font-size:12px;color:var(--g400);min-width:48px;font-weight:500}.act .d{font-size:13.5px;color:var(--g600)}.act .hl{color:var(--a600);font-weight:600}
+
+/* Email */
+.em{padding:14px;border-radius:12px;background:var(--g50);border-left:3px solid var(--g200);margin-bottom:8px}
+.em.out{border-left-color:var(--a500)}.em.in{border-left-color:var(--ok500)}
+.em .mt{display:flex;justify-content:space-between;font-size:12px;color:var(--g400);margin-bottom:6px}.em .bd{font-size:13.5px;line-height:1.5;color:var(--g700)}
+
+/* Platform */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.pc{background:#fff;border:1px solid var(--g100);border-radius:16px;padding:20px;box-shadow:var(--sh);transition:all .15s;cursor:pointer}
+.pc:hover{box-shadow:var(--sh2)}
+.pc .pn{font-size:16px;font-weight:700;color:var(--g900)}.pc .pu{font-size:12px;color:var(--g400);margin-top:2px}
+.pc .rw{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.pc .r{display:flex;justify-content:space-between;font-size:13px;color:var(--g400)}.pc .r .v{color:var(--g900);font-weight:500}
+
+/* Quick Action */
+.qa{padding:18px;text-align:left;background:#fff;border:1px solid var(--g100);border-radius:16px;cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.qa:hover{border-color:var(--a200);box-shadow:var(--sh2)}
+.qa .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:12px}
+.qa .tl{font-size:14px;color:var(--g900);font-weight:600}.qa .sl{font-size:12px;color:var(--g400);margin-top:4px}
+
+/* AI bar */
+.ai-b{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--p50);border-radius:12px;border:1px solid var(--p100)}
+.ai-b .tx{font-size:13px;color:var(--g700);flex:1}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(4px);z-index:100;justify-content:center;align-items:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:20px;box-shadow:var(--sh3);width:90%;max-width:540px;max-height:85vh;overflow-y:auto;animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-h{padding:20px 24px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+.modal-h h2{font-size:17px;font-weight:700}
+.modal-b{padding:24px}
+.modal-f{padding:16px 24px;border-top:1px solid var(--g100);display:flex;justify-content:flex-end;gap:8px}
+.form-g{margin-bottom:16px}
+.form-g label{display:block;font-size:13px;font-weight:500;color:var(--g700);margin-bottom:6px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Page */
+.pg-v{display:none}.pg-v.on{display:block}
+/* Tab content */
+.tab-ct{display:none}.tab-ct.on{display:block}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb">
+<div class="sb-hd">
+<div class="sb-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#fff"/></svg></div>
+<div><div style="font-weight:700;color:var(--g900);font-size:15px">CIN Operations</div><div style="color:var(--g400);font-size:11px">crossinnovation.network</div></div>
+</div>
+<nav class="sb-nav">
+<div class="sb-i on" onclick="P('dash',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+<div class="sb-sec">CRM</div>
+<div class="sb-i" onclick="P('leads',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9z"/></svg>Leads<span class="sb-b b">12</span></div>
+<div class="sb-i" onclick="P('kunden',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4a4 4 0 0 1 0 8"/><path d="M22 21a6 6 0 0 0-5-6"/></svg>Kunden</div>
+<div class="sb-i" onclick="P('kontakte',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Kontakte</div>
+<div class="sb-i" onclick="P('payment',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Payment</div>
+<div class="sb-i" onclick="P('gutscheine',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12V8H4v4m16 0v4H4v-4m16 0H4"/></svg>Gutscheine</div>
+<div class="sb-sec">Lifecycle</div>
+<div class="sb-i" onclick="P('plat',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Plattformen</div>
+<div class="sb-i" onclick="P('deploy',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v12M6 12l6 6 6-6"/><path d="M4 20h16"/></svg>Deployments</div>
+<div class="sb-i" onclick="P('releases',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 9h14M5 15h14M10 3L8 21M16 3l-2 18"/></svg>Releases</div>
+<div class="sb-sec">Onboarding</div>
+<div class="sb-i" onclick="P('onboard',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Jobs<span class="sb-b w">2</span></div>
+<div class="sb-i" onclick="P('monitor',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Monitoring</div>
+<div class="sb-sec">Support</div>
+<div class="sb-i" onclick="P('tickets',this)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-12 7l-5 2 1.5-4.5A8 8 0 1 1 21 12z"/></svg>Tickets<span class="sb-b r">3</span></div>
+</nav>
+<div class="sb-u"><div class="av">BM</div><div><div style="font-size:13.5px;font-weight:600;color:var(--g900)">Bruno Maurer</div><div style="font-size:11px;color:var(--g400)">Admin</div></div></div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="mn">
+<header class="hdr">
+<div class="sr-w"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input class="input" placeholder="Suchen..."></div>
+<div style="flex:1"></div>
+<button class="btn btn-ai btn-sm" onclick="M('m-agent')">✦ KI Agent</button>
+<button class="btn-icon" style="position:relative"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span style="position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:999px;background:var(--d500);color:#fff;font-size:8px;font-weight:700;display:grid;place-items:center">4</span></button>
+<div class="av" style="width:32px;height:32px;font-size:11px;border-radius:999px">BM</div>
+</header>
+
+<div class="ct">
+
+<!-- ════ DASHBOARD ════ -->
+<div class="pg-v on" id="v-dash">
+<div style="margin-bottom:24px">
+<div style="font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:.1em;font-weight:600">Sonntag · 08. Juni 2026</div>
+<h1 style="font-size:26px;font-weight:700;margin-top:4px">Guten Morgen, Bruno.</h1>
+<p style="color:var(--g500);font-size:14px;margin-top:4px"><span style="color:var(--p500);font-weight:600">KI Agent</span> hat <b style="color:var(--g900)">3 Leads</b> bearbeitet und <b style="color:var(--g900)">1 Demo</b> erstellt.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+<div class="kpi"><div class="l">Aktive Kunden</div><div class="v">3</div><div class="c up">+1 diesen Monat</div></div>
+<div class="kpi"><div class="l">Offene Leads</div><div class="v">12</div><div class="c up">+4 diese Woche</div></div>
+<div class="kpi"><div class="l">MRR</div><div class="v">5'000</div><div class="c" style="color:var(--g400)">CHF / Monat</div></div>
+<div class="kpi"><div class="l">Offene Tickets</div><div class="v">3</div><div class="c dn">1 ueberfaellig</div></div>
+</div>
+<div class="card" style="padding:20px;margin-bottom:16px">
+<div style="display:flex;align-items:center;margin-bottom:16px"><h3 style="font-size:15px;font-weight:700">Lead Pipeline</h3><span class="chip cg" style="margin-left:10px;font-size:11px">linkedin → kunde</span><div style="flex:1"></div><button class="btn-g" onclick="P('leads')" style="color:var(--a600)">Kanban →</button></div>
+<div class="stg">
+<div class="stg-c" onclick="P('leads')"><div class="sl"><div class="dot ac"></div><span style="color:var(--a600)">01 LinkedIn</span></div><div class="sv">8</div><div class="ss">Klicks</div></div>
+<div class="stg-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></div>
+<div class="stg-c"><div class="sl"><div class="dot wn"></div><span style="color:var(--w600)">02 E-Mail</span></div><div class="sv">4</div><div class="ss">Gesendet</div></div>
+<div class="stg-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></div>
+<div class="stg-c on"><div class="sl"><div class="dot pr"></div><span style="color:var(--p500)">03 Demo</span></div><div class="sv">2</div><div class="ss">Trial</div></div>
+<div class="stg-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></div>
+<div class="stg-c" onclick="P('kunden')"><div class="sl"><div class="dot ok"></div><span style="color:var(--ok600)">04 Kunde</span></div><div class="sv">1</div><div class="ss">Conversion</div></div>
+</div>
+<div class="ai-b" style="margin-top:14px"><span style="color:var(--p500)">✦</span><span class="tx">Bottleneck: <b>E-Mail → Demo</b> (50% drop). 2 Leads ohne Antwort seit 5+ Tagen.</span><button class="btn btn-ai btn-sm">Review</button></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+<div class="card" style="padding:20px"><h3 style="font-size:14px;font-weight:600;margin-bottom:12px">Letzte Aktivitaeten</h3>
+<div class="act"><span class="t">2h</span><span class="d"><span class="hl">KI-Agent</span> 3 Leads mit Neuigkeiten versorgt</span></div>
+<div class="act"><span class="t">4h</span><span class="d"><span class="hl">Fullenrich</span> E-Mail fuer "M. Schneider" gefunden</span></div>
+<div class="act"><span class="t">6h</span><span class="d"><span class="hl">System</span> Demo fuer "TechVision AG" erstellt</span></div>
+<div class="act"><span class="t">1d</span><span class="d"><span class="hl">Stripe</span> CHF 199 von HGC erhalten</span></div>
+<div class="act"><span class="t">1d</span><span class="d"><span class="hl">Deploy</span> v2.4.1 auf cin_hgc</span></div>
+</div>
+<div class="card" style="padding:20px"><div style="display:flex;align-items:center;margin-bottom:12px"><h3 style="font-size:14px;font-weight:600">Plattform-Status</h3><div style="flex:1"></div><button class="btn-g" onclick="P('plat')" style="color:var(--a600);font-size:12px">Alle →</button></div>
+<table class="tbl"><tbody>
+<tr onclick="P('plat-d-hgc')"><td><strong>HGC</strong></td><td style="font-size:12px;color:var(--g400)">v2.4.1</td><td><span class="dot ok"></span></td><td style="color:var(--g400)">99.9%</td></tr>
+<tr onclick="P('plat-d-jura')"><td><strong>Jura</strong></td><td style="font-size:12px;color:var(--g400)">v2.4.1</td><td><span class="dot ok"></span></td><td style="color:var(--g400)">99.8%</td></tr>
+<tr onclick="P('plat-d-demo')"><td><strong>Demo</strong></td><td style="font-size:12px;color:var(--w500)">v2.3.8</td><td><span class="dot wn"></span></td><td style="color:var(--g400)">99.5%</td></tr>
+</tbody></table></div>
+</div>
+<div class="card" style="padding:20px"><h3 style="font-size:14px;font-weight:600;margin-bottom:14px">Was moechtest du tun?</h3>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<button class="qa" onclick="P('leads')"><div class="ic" style="background:var(--a50);color:var(--a600)">★</div><div class="tl">Leads bearbeiten</div><div class="sl">12 offene Leads</div></button>
+<button class="qa" onclick="M('m-deploy')"><div class="ic" style="background:var(--ok50);color:var(--ok600)">↓</div><div class="tl">Deployment</div><div class="sl">Demo updaten</div></button>
+<button class="qa" onclick="P('onboard')"><div class="ic" style="background:var(--p50);color:var(--p500)">⚡</div><div class="tl">Onboarding</div><div class="sl">2 Jobs laufen</div></button>
+<button class="qa" onclick="P('tickets')"><div class="ic" style="background:var(--d50);color:var(--d500)">💬</div><div class="tl">Tickets</div><div class="sl">3 offen</div></button>
+</div></div>
+</div>
+
+<!-- ════ LEADS KANBAN ════ -->
+<div class="pg-v" id="v-leads">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><h1 style="font-size:20px;font-weight:700">Lead Pipeline</h1><span class="chip cg">linkedin → kunde</span><div style="flex:1"></div><button class="btn btn-s btn-sm">Filter</button><button class="btn btn-p btn-sm" onclick="M('m-lead')">+ Lead erfassen</button></div>
+<div class="tf-bar"><span class="tfl">Tags:</span><button class="tf on" onclick="tfTog(this)">Alle</button><button class="tf" onclick="tfTog(this)">IT</button><button class="tf" onclick="tfTog(this)">Pharma</button><button class="tf" onclick="tfTog(this)">Bau</button><button class="tf" onclick="tfTog(this)">Hot Lead</button><button class="tf" onclick="tfTog(this)">VIP</button></div>
+<div class="kb">
+<div class="kc"><div class="kc-h"><span class="dot ac"></span><span class="t">LinkedIn Klick</span><span class="n">4</span></div><div class="kc-b">
+<div class="kk" onclick="P('ld-anna')"><div class="nm">Anna Mueller</div><div class="co">FutureLab · Zuerich</div><div class="tg"><span class="chip cw">Fullenrich laeuft</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-bl">IT</span><span class="tag t-pr">Kampagne Q2</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk" onclick="P('ld-david')"><div class="nm">David Braun</div><div class="co">SwissInno AG</div><div class="tg"><span class="chip cw">Fullenrich laeuft</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-bl">IT</span><span class="tag t-or">Hot Lead</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk"><div class="nm">Julia Frei</div><div class="co">NextGen Solutions</div><div class="tg"><span class="chip ca">Neu</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-gr">Pharma</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk"><div class="nm">Reto Koenig</div><div class="co">Koenig Consulting</div><div class="tg"><span class="chip ca">Neu</span></div><div class="tags-row" style="margin-top:6px"><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+</div></div>
+<div class="kc"><div class="kc-h"><span class="dot wn"></span><span class="t">E-Mail gesendet</span><span class="n">4</span></div><div class="kc-b">
+<div class="kk" onclick="P('ld-thomas')"><div class="nm">Thomas Huber</div><div class="co">Digital Factory</div><div class="tg"><span class="chip cs">Mail geoeffnet</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-bl">IT</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk"><div class="nm">Peter Brunner</div><div class="co">Brunner Consulting</div><div class="tg"><span class="chip cp">Gutschein LINKEDIN30</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-yl">Bau</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk"><div class="nm">Sandra Weiss</div><div class="co">Weiss & Partner</div><div class="tg"><span class="chip cd">Keine Antwort 5d</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-gr">Pharma</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk"><div class="nm">Marco Tanner</div><div class="co">InnoTech</div><div class="tg"><span class="chip cs">Hat geantwortet</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-bl">IT</span><span class="tag t-or">Hot Lead</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+</div></div>
+<div class="kc"><div class="kc-h"><span class="dot pr"></span><span class="t">Demo aktiv</span><span class="n">2</span></div><div class="kc-b">
+<div class="kk" onclick="P('ld-martin')" style="border-color:var(--p100)"><div class="nm">Martin Schneider</div><div class="co">TechVision AG</div><div class="tg"><span class="chip cp">Tag 4/14</span><span class="chip cs">Aktiv</span></div><div style="margin-top:10px"><div class="bar"><div class="fl" style="width:28%;background:var(--p400)"></div></div></div><div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+<div class="kk" style="border-color:var(--p100)"><div class="nm">Sarah Keller</div><div class="co">InnoSwiss GmbH</div><div class="tg"><span class="chip cp">Tag 11/14</span><span class="chip cw">Wenig Aktivitaet</span></div><div style="margin-top:10px"><div class="bar"><div class="fl" style="width:78%;background:var(--w400)"></div></div></div><div class="tags-row" style="margin-top:8px"><span class="tag t-gr">Pharma</span><button class="tag-add" onclick="event.stopPropagation();M('m-tag')">+ Tag</button></div></div>
+</div></div>
+<div class="kc"><div class="kc-h"><span class="dot ok"></span><span class="t">Conversion</span><span class="n">1</span></div><div class="kc-b">
+<div class="kk" style="border-color:var(--ok100)"><div class="nm">Demo AG</div><div class="co">Demonstrationskunde</div><div class="tg"><span class="chip cs">Bezahlt 01.06.</span></div><div class="tags-row" style="margin-top:6px"><span class="tag t-gy">Demo</span></div></div>
+</div></div>
+<div class="kc"><div class="kc-h"><span class="dot ht"></span><span class="t">Verloren</span><span class="n">2</span></div><div class="kc-b">
+<div class="kk" style="opacity:.5"><div class="nm">Hans Meier</div><div class="co">Meier AG</div><div class="tags-row" style="margin-top:6px"><span class="tag t-yl">Bau</span></div></div>
+<div class="kk" style="opacity:.5"><div class="nm">Eva Schmid</div><div class="co">Schmid Holding</div><div class="tags-row" style="margin-top:6px"><span class="tag t-gr">Pharma</span></div></div>
+</div></div>
+</div></div>
+
+<!-- ════ LEAD DETAIL (Anna) ════ -->
+<div class="pg-v" id="v-ld-anna">
+<div class="bc"><button onclick="P('leads')">← Leads</button><span>/</span><span class="dot ac"></span><span>LinkedIn Klick</span><span>/</span><span style="color:var(--g400)">#L-004</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--a400),var(--p400))">AM</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cw">LinkedIn Klick</span><span class="chip cp">Fullenrich aktiv</span></div>
+<h1 style="font-size:22px;font-weight:700">Anna Mueller</h1>
+<p style="color:var(--g500);font-size:14px;margin-top:4px">FutureLab · Zuerich · IT & Digitalisierung</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span><span class="tag t-pr">Kampagne Q2</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-demo')">Zur Demo einladen</button>
+</div>
+<div class="ig">
+<div class="ii"><div class="l">LinkedIn</div><div class="v" style="color:var(--a600)">linkedin.com/in/anna-mueller</div></div>
+<div class="ii"><div class="l">E-Mail</div><div class="v" style="color:var(--w600)">Fullenrich laeuft...</div></div>
+<div class="ii"><div class="l">Quelle</div><div class="v">LinkedIn Kampagne "Digitalisierung 2026"</div></div>
+<div class="ii"><div class="l">Erster Kontakt</div><div class="v">05.06.2026, 14:22</div></div>
+</div>
+<div class="tabs"><div class="tab on" onclick="T(this,'ld-anna')">Aktivitaeten</div><div class="tab" onclick="T(this,'ld-anna')">E-Mails</div><div class="tab" onclick="T(this,'ld-anna')">Notizen</div></div>
+<div class="tab-ct on" id="tc-ld-anna-0">
+<div class="act"><span class="t">05.06.</span><span class="d"><span class="hl">System</span> Lead erfasst via LinkedIn Kampagne</span></div>
+<div class="act"><span class="t">05.06.</span><span class="d"><span class="hl">Fullenrich</span> Enrichment gestartet — Profil erkannt</span></div>
+<div class="act"><span class="t">06.06.</span><span class="d"><span class="hl">KI-Agent</span> Geplant: Welcome-Mail sobald E-Mail da</span></div>
+</div>
+<div class="tab-ct" id="tc-ld-anna-1"><p style="color:var(--g400);padding:20px 0">Noch keine E-Mails — wartet auf Fullenrich-Ergebnis.</p></div>
+<div class="tab-ct" id="tc-ld-anna-2"><p style="color:var(--g400);padding:20px 0">Keine Notizen vorhanden.</p><button class="btn btn-s btn-sm" onclick="M('m-note')">+ Notiz</button></div>
+</div>
+<div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Quick Actions</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail senden</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-note')">📝 Notiz hinzufuegen</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-demo')">⚡ Demo starten</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start;color:var(--ok600)" onclick="M('m-convert')">✓ Zum Kunden konvertieren</button>
+</div></div>
+<div class="card"><div class="card-h"><h3>KI-Agent</h3></div><div style="padding:16px"><span class="chip cp" style="margin-bottom:10px">✦ Automatisch</span><div style="font-size:13px;color:var(--g500);line-height:1.6;margin-top:8px">Wartet auf Fullenrich. Dann: Welcome-Mail mit Gutschein WELCOME2026.</div></div></div>
+</div></div></div>
+
+<!-- ════ LEAD DETAIL (Thomas) ════ -->
+<div class="pg-v" id="v-ld-thomas">
+<div class="bc"><button onclick="P('leads')">← Leads</button><span>/</span><span class="dot wn"></span><span>E-Mail gesendet</span><span>/</span><span style="color:var(--g400)">#L-007</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--a400),var(--ok400))">TH</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cs">Mail geoeffnet</span></div>
+<h1 style="font-size:22px;font-weight:700">Thomas Huber</h1>
+<p style="color:var(--g500);font-size:14px;margin-top:4px">Digital Factory · Zuerich</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-demo')">Demo einladen</button></div>
+<div class="ig">
+<div class="ii"><div class="l">E-Mail</div><div class="v">t.huber@digitalfactory.ch</div></div>
+<div class="ii"><div class="l">Telefon</div><div class="v">+41 44 789 01 23</div></div>
+<div class="ii"><div class="l">Quelle</div><div class="v">LinkedIn Kampagne "Digitalisierung 2026"</div></div>
+<div class="ii"><div class="l">Erster Kontakt</div><div class="v">28.05.2026</div></div>
+</div>
+<div class="tabs"><div class="tab on" onclick="T(this,'ld-th')">Aktivitaeten</div><div class="tab" onclick="T(this,'ld-th')">E-Mails</div></div>
+<div class="tab-ct on" id="tc-ld-th-0">
+<div class="act"><span class="t">02.06.</span><span class="d"><span class="hl">System</span> Welcome-Mail gesendet (Gutschein WELCOME2026)</span></div>
+<div class="act"><span class="t">03.06.</span><span class="d"><span class="hl">Tracking</span> Mail geoeffnet — 3x</span></div>
+<div class="act"><span class="t">05.06.</span><span class="d"><span class="hl">KI-Agent</span> Follow-up geplant fuer 09.06.</span></div>
+</div>
+<div class="tab-ct" id="tc-ld-th-1">
+<div class="em out"><div class="mt"><span>An: t.huber@digitalfactory.ch</span><span>02.06.</span></div><div class="bd">Hallo Thomas, CIN hilft Ihrem Team Trends systematisch zu erfassen. Testen Sie 14 Tage kostenlos — mit Code WELCOME2026 erhalten Sie 50% auf den ersten Monat.</div></div>
+</div>
+</div><div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Quick Actions</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail senden</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-demo')">⚡ Demo starten</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start;color:var(--ok600)" onclick="M('m-convert')">✓ Zum Kunden</button>
+</div></div></div></div></div>
+
+<!-- ════ LEAD DETAIL (Martin - Demo) ════ -->
+<div class="pg-v" id="v-ld-martin">
+<div class="bc"><button onclick="P('leads')">← Leads</button><span>/</span><span class="dot pr"></span><span>Demo aktiv</span><span>/</span><span style="color:var(--g400)">#L-010</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--p400),var(--a400))">MS</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cp">Demo Tag 4/14</span><span class="chip cs">Aktiv</span></div>
+<h1 style="font-size:22px;font-weight:700">Martin Schneider</h1>
+<p style="color:var(--g500);font-size:14px;margin-top:4px">TechVision AG · CEO · IT & Digitalisierung</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-convert')">Zum Kunden konvertieren</button></div>
+<div class="ig">
+<div class="ii"><div class="l">E-Mail</div><div class="v">m.schneider@techvision.ch</div></div>
+<div class="ii"><div class="l">Demo-Plattform</div><div class="v" style="color:var(--a600)">techvision-demo.trendradar.ch</div></div>
+<div class="ii"><div class="l">Demo-Start</div><div class="v">04.06.2026</div></div>
+<div class="ii"><div class="l">Demo-Ende</div><div class="v" style="color:var(--w600)">18.06.2026 (10 Tage)</div></div>
+</div>
+<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">Demo-Fortschritt</span><span style="font-weight:600">Tag 4 / 14</span></div><div class="bar" style="height:8px"><div class="fl" style="width:28%;background:var(--p400)"></div></div></div>
+<div class="tabs"><div class="tab on" onclick="T(this,'ld-ms')">Plattform-Aktivitaet</div><div class="tab" onclick="T(this,'ld-ms')">E-Mails</div></div>
+<div class="tab-ct on" id="tc-ld-ms-0">
+<div class="act"><span class="t">Heute</span><span class="d"><span class="hl">3 Logins</span> — 8 Steckbriefe angesehen, 2 Ratings abgegeben</span></div>
+<div class="act"><span class="t">07.06.</span><span class="d"><span class="hl">1 Login</span> — Dashboard und Action Boards erkundet</span></div>
+<div class="act"><span class="t">05.06.</span><span class="d"><span class="hl">Erster Login</span> — Onboarding abgeschlossen, 15 Trends generiert</span></div>
+</div>
+<div class="tab-ct" id="tc-ld-ms-1">
+<div class="em out"><div class="mt"><span>An: m.schneider@techvision.ch</span><span>04.06.</span></div><div class="bd">Willkommen bei CIN! Ihre Demo-Plattform ist bereit: techvision-demo.trendradar.ch — 15 Trends aus Ihrer Branche sind bereits vorbereitet.</div></div>
+<div class="em in"><div class="mt"><span>Von: m.schneider@techvision.ch</span><span>05.06.</span></div><div class="bd">Vielen Dank! Sehr beeindruckend wie schnell das aufgesetzt wurde. Haben Sie auch Templates fuer den Bereich Cybersecurity?</div></div>
+<div class="em out"><div class="mt"><span>An: m.schneider@techvision.ch</span><span>05.06.</span></div><div class="bd">Ja, wir koennen ein Cybersecurity-Template ergaenzen. Soll ich das aufsetzen? Dauert ca. 5 Minuten.</div></div>
+</div>
+</div><div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Demo-Metriken</h3></div><div style="padding:16px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--g400)">Logins</span><span style="font-weight:600">5</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--g400)">Seitenaufrufe</span><span style="font-weight:600">42</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--g400)">Ratings</span><span style="font-weight:600">2</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--g400)">Engagement</span><span style="font-weight:600;color:var(--ok500)">Hoch</span></div>
+</div></div>
+<div class="card"><div class="card-h"><h3>Quick Actions</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail senden</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start;color:var(--ok600)" onclick="M('m-convert')">✓ Zum Kunden konvertieren</button>
+</div></div></div></div></div>
+
+<!-- ════ LEAD DETAIL (David) ════ -->
+<div class="pg-v" id="v-ld-david">
+<div class="bc"><button onclick="P('leads')">← Leads</button><span>/</span><span style="color:var(--g400)">#L-005</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--w400),var(--or,#F97316))">DB</div>
+<div style="flex:1"><span class="chip cw">Fullenrich laeuft</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">David Braun</h1>
+<p style="color:var(--g500);font-size:14px;margin-top:4px">SwissInno AG</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span><span class="tag t-or">Hot Lead</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div></div>
+<div class="ig"><div class="ii"><div class="l">LinkedIn</div><div class="v" style="color:var(--a600)">linkedin.com/in/david-braun</div></div><div class="ii"><div class="l">E-Mail</div><div class="v" style="color:var(--w600)">Fullenrich laeuft...</div></div></div>
+<div class="act"><span class="t">06.06.</span><span class="d"><span class="hl">System</span> Lead erfasst via LinkedIn</span></div>
+<div class="act"><span class="t">06.06.</span><span class="d"><span class="hl">Fullenrich</span> Enrichment gestartet</span></div>
+</div><div><div class="card"><div class="card-h"><h3>Quick Actions</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail senden</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-demo')">⚡ Demo starten</button>
+</div></div></div></div></div>
+
+<!-- ════ KUNDEN ════ -->
+<div class="pg-v" id="v-kunden">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+<div class="kpi"><div class="l">Aktive Kunden</div><div class="v">3</div></div>
+<div class="kpi"><div class="l">MRR Total</div><div class="v">5'000 CHF</div></div>
+<div class="kpi"><div class="l">Avg. Engagement</div><div class="v">72%</div></div>
+</div>
+<div class="card"><table class="tbl"><thead><tr><th>Kunde</th><th>Tier</th><th>Tags</th><th>MRR</th><th>Plattform</th><th>Aktivitaet</th></tr></thead><tbody>
+<tr onclick="P('kd-hgc')"><td><strong>HGC</strong><br><span class="sub">Holcim Group Company</span></td><td><span class="chip cp">Enterprise</span></td><td><div class="tags-row"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span></div></td><td>2'083 CHF</td><td style="color:var(--a600);font-size:12px">hgc.trendradar.ch</td><td style="color:var(--ok500)">Hoch</td></tr>
+<tr onclick="P('kd-jura')"><td><strong>Jura Cement</strong><br><span class="sub">Jura Materials</span></td><td><span class="chip cp">Enterprise</span></td><td><div class="tags-row"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span></div></td><td>2'083 CHF</td><td style="color:var(--a600);font-size:12px">jura.trendradar.ch</td><td style="color:var(--ok500)">Hoch</td></tr>
+<tr><td><strong>Demo AG</strong><br><span class="sub">Demonstrationskunde</span></td><td><span class="chip ca">Starter</span></td><td><div class="tags-row"><span class="tag t-gy">Demo</span></div></td><td>833 CHF</td><td style="color:var(--a600);font-size:12px">demo.trendradar.ch</td><td style="color:var(--w500)">Mittel</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ KUNDE DETAIL (HGC) ════ -->
+<div class="pg-v" id="v-kd-hgc">
+<div class="bc"><button onclick="P('kunden')">← Kunden</button><span>/</span><span style="color:var(--g400)">#K-001</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--ok400),var(--a500))">HG</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cs">Aktiv</span><span class="chip cp">Enterprise</span></div>
+<h1 style="font-size:22px;font-weight:700">HGC</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Holcim Group Company · seit 01.01.2026</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-s btn-sm">↗ Plattform</button></div>
+<div class="ig">
+<div class="ii"><div class="l">MRR</div><div class="v">2'083 CHF</div></div>
+<div class="ii"><div class="l">Plattform</div><div class="v" style="color:var(--a600);font-size:12px">hgc.trendradar.ch</div></div>
+<div class="ii"><div class="l">DB / Version</div><div class="v" style="font-size:12px">cin_hgc · v2.4.1</div></div>
+<div class="ii"><div class="l">Uptime</div><div class="v" style="color:var(--ok500)">99.9%</div></div>
+</div>
+<div class="tabs"><div class="tab on" onclick="T(this,'kd-hgc')">Aktivitaet</div><div class="tab" onclick="T(this,'kd-hgc')">E-Mails</div><div class="tab" onclick="T(this,'kd-hgc')">Rechnungen</div><div class="tab" onclick="T(this,'kd-hgc')">Tickets (1)</div></div>
+<div class="tab-ct on" id="tc-kd-hgc-0">
+<div class="act"><span class="t">Heute</span><span class="d"><span class="hl">5 Logins</span> — 3 User, 12 Steckbriefe</span></div>
+<div class="act"><span class="t">07.06.</span><span class="d"><span class="hl">Rating</span> "Q3 Bewertung" — 8 Teilnehmer</span></div>
+<div class="act"><span class="t">06.06.</span><span class="d"><span class="hl">3 Trends</span> via KI-Agent</span></div>
+<div class="act"><span class="t">05.06.</span><span class="d"><span class="hl">Deploy</span> v2.4.1 erfolgreich</span></div></div>
+<div class="tab-ct" id="tc-kd-hgc-1">
+<button class="btn btn-p btn-sm" onclick="M('m-email')" style="margin-bottom:12px">+ E-Mail senden</button>
+<div class="em out"><div class="mt"><span>An: r.mueller@hgc.ch</span><span>03.06.</span></div><div class="bd">v2.4.1 deployed — Bugfix Rating.</div></div>
+<div class="em in"><div class="mt"><span>Von: r.mueller@hgc.ch</span><span>04.06.</span></div><div class="bd">Funktioniert einwandfrei. Danke!</div></div></div>
+<div class="tab-ct" id="tc-kd-hgc-2">
+<table class="tbl"><thead><tr><th>Datum</th><th>Betrag</th><th>Status</th></tr></thead><tbody>
+<tr><td>01.06.2026</td><td>2'083 CHF</td><td style="color:var(--ok500)">Bezahlt</td></tr>
+<tr><td>01.05.2026</td><td>2'083 CHF</td><td style="color:var(--ok500)">Bezahlt</td></tr>
+<tr><td>01.04.2026</td><td>2'083 CHF</td><td style="color:var(--ok500)">Bezahlt</td></tr>
+</tbody></table></div>
+<div class="tab-ct" id="tc-kd-hgc-3">
+<table class="tbl"><tbody><tr onclick="P('tk-14')"><td style="color:var(--g400)">#014</td><td><strong>Rating-Export funktioniert nicht</strong></td><td style="color:var(--d500)">Hoch</td><td><span class="chip cw">Offen</span></td></tr></tbody></table></div>
+</div>
+<div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Kontakte</h3></div><div style="padding:16px">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="av" style="width:30px;height:30px;font-size:10px">RM</div><div><div style="font-size:13.5px;font-weight:600;color:var(--g900)">Roland Mueller</div><div style="font-size:11px;color:var(--g400)">Head of Innovation</div></div></div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="av" style="width:30px;height:30px;font-size:10px;background:linear-gradient(135deg,var(--p400),var(--p500))">SK</div><div><div style="font-size:13.5px;font-weight:600;color:var(--g900)">Sandra Kramer</div><div style="font-size:11px;color:var(--g400)">Innovation Manager</div></div></div>
+<button class="btn btn-s btn-sm" style="width:100%" onclick="M('m-contact')">+ Kontakt</button></div></div>
+<div class="card"><div class="card-h"><h3>Token-Verbrauch</h3></div><div style="padding:16px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">6'200 / 25'000</span><span style="font-weight:600">25%</span></div>
+<div class="bar"><div class="fl" style="width:25%;background:var(--ok400)"></div></div></div></div>
+</div></div></div>
+
+<!-- ════ KUNDE DETAIL (Jura) ════ -->
+<div class="pg-v" id="v-kd-jura">
+<div class="bc"><button onclick="P('kunden')">← Kunden</button><span>/</span><span style="color:var(--g400)">#K-002</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--w400),var(--ok400))">JC</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cs">Aktiv</span><span class="chip cp">Enterprise</span></div>
+<h1 style="font-size:22px;font-weight:700">Jura Cement</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Jura Materials · seit 01.01.2026</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span></div></div></div>
+<div class="ig">
+<div class="ii"><div class="l">MRR</div><div class="v">2'083 CHF</div></div>
+<div class="ii"><div class="l">Plattform</div><div class="v" style="color:var(--a600);font-size:12px">jura.trendradar.ch</div></div>
+<div class="ii"><div class="l">DB / Version</div><div class="v" style="font-size:12px">cin_jura · v2.4.1</div></div>
+<div class="ii"><div class="l">Uptime</div><div class="v" style="color:var(--ok500)">99.8%</div></div></div>
+<div class="act"><span class="t">Gestern</span><span class="d"><span class="hl">4 Logins</span> — 2 User, 5 Steckbriefe bearbeitet</span></div>
+<div class="act"><span class="t">06.06.</span><span class="d"><span class="hl">Deploy</span> v2.4.1 erfolgreich</span></div>
+</div><div><div class="card"><div class="card-h"><h3>Quick Actions</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start">↗ Plattform</button>
+</div></div></div></div></div>
+
+<!-- ════ KONTAKTE ════ -->
+<div class="pg-v" id="v-kontakte">
+<div class="tabs"><div class="tab on">Alle (47)</div><div class="tab">Pipedrive (38)</div><div class="tab">Manuell (9)</div></div>
+<div class="card"><div class="card-h"><h3>Kontakte-Pool</h3><div style="display:flex;gap:8px"><button class="btn btn-s btn-sm">Importieren</button><button class="btn btn-p btn-sm" onclick="M('m-contact')">+ Kontakt</button></div></div>
+<table class="tbl"><thead><tr><th>Name</th><th>Firma</th><th>Tags</th><th>E-Mail</th><th>Quelle</th><th>KI-Agent</th></tr></thead><tbody>
+<tr onclick="P('ct-werner')"><td><strong>Werner Stocker</strong></td><td>Stocker Industries</td><td><div class="tags-row"><span class="tag t-yl">Bau</span><span class="tag t-pk">CEO</span></div></td><td style="font-size:12px;color:var(--g400)">w.stocker@stocker-ind.ch</td><td><span class="chip ca">Pipedrive</span></td><td><span class="chip cs">Neuigkeit gesendet</span></td></tr>
+<tr onclick="P('ct-lisa')"><td><strong>Lisa Gerber</strong></td><td>Novartis</td><td><div class="tags-row"><span class="tag t-gr">Pharma</span><span class="tag t-rd">VIP</span></div></td><td style="font-size:12px;color:var(--g400)">lisa.gerber@novartis.com</td><td><span class="chip ca">Pipedrive</span></td><td><span class="chip cp">Geplant: 10.06.</span></td></tr>
+<tr><td><strong>Marc Roth</strong></td><td>SwissRe</td><td><div class="tags-row"><span class="tag t-bl">Finance</span></div></td><td style="font-size:12px;color:var(--g400)">marc.roth@swissre.com</td><td><span class="chip ca">Pipedrive</span></td><td><span class="chip cw">Ausstehend</span></td></tr>
+</tbody></table></div></div>
+
+<!-- ════ KONTAKT DETAIL (Werner) ════ -->
+<div class="pg-v" id="v-ct-werner">
+<div class="bc"><button onclick="P('kontakte')">← Kontakte</button><span>/</span><span style="color:var(--g400)">#C-012</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--w400),var(--d400))">WS</div>
+<div style="flex:1"><span class="chip ca">Pipedrive</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">Werner Stocker</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Stocker Industries · CEO · Maschinenbau</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-yl">Bau</span><span class="tag t-pk">CEO</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-s btn-sm" onclick="M('m-email')">E-Mail</button><button class="btn btn-p btn-sm">Zum Lead</button></div>
+<div class="ig"><div class="ii"><div class="l">E-Mail</div><div class="v" style="font-size:12px">w.stocker@stocker-ind.ch</div></div><div class="ii"><div class="l">Telefon</div><div class="v">+41 44 123 45 67</div></div><div class="ii"><div class="l">Quelle</div><div class="v">Pipedrive Import (28.05.)</div></div><div class="ii"><div class="l">Branche</div><div class="v">Maschinenbau</div></div></div>
+<div class="act"><span class="t">01.06.</span><span class="d"><span class="hl">KI-Agent</span> Neuigkeit: "Trend-Report Maschinenbau Q2"</span></div>
+<div class="act"><span class="t">28.05.</span><span class="d"><span class="hl">System</span> Importiert aus Pipedrive</span></div>
+</div><div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>KI-Agent</h3></div><div style="padding:16px"><span class="chip cs">Aktiv</span><div style="font-size:13px;color:var(--g500);line-height:1.6;margin-top:10px">Naechste Aktion: Neuigkeit am 10.06.2026</div></div></div>
+<div class="card"><div class="card-h"><h3>Pipedrive</h3></div><div style="padding:16px;font-size:13px;color:var(--g600);line-height:1.7"><div><strong style="color:var(--g900)">Deal:</strong> Stocker — Trend Radar</div><div><strong style="color:var(--g900)">Stage:</strong> Kontakt aufgenommen</div><div><strong style="color:var(--g900)">Wert:</strong> CHF 10'000</div></div></div>
+</div></div></div>
+
+<!-- ════ KONTAKT DETAIL (Lisa) ════ -->
+<div class="pg-v" id="v-ct-lisa">
+<div class="bc"><button onclick="P('kontakte')">← Kontakte</button><span>/</span><span style="color:var(--g400)">#C-008</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--ok400),var(--p400))">LG</div>
+<div style="flex:1"><span class="chip ca">Pipedrive</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">Lisa Gerber</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Novartis · Director Innovation</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-gr">Pharma</span><span class="tag t-rd">VIP</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-s btn-sm" onclick="M('m-email')">E-Mail</button><button class="btn btn-p btn-sm">Zum Lead</button></div>
+<div class="ig"><div class="ii"><div class="l">E-Mail</div><div class="v" style="font-size:12px">lisa.gerber@novartis.com</div></div><div class="ii"><div class="l">Telefon</div><div class="v">+41 61 555 00 00</div></div></div>
+<div class="act"><span class="t">28.05.</span><span class="d"><span class="hl">System</span> Importiert aus Pipedrive (Deal: Novartis Innovation)</span></div>
+</div><div><div class="card"><div class="card-h"><h3>KI-Agent</h3></div><div style="padding:16px"><span class="chip cp">Geplant: 10.06.</span><div style="font-size:13px;color:var(--g500);line-height:1.6;margin-top:10px">Pharma-Trends Newsletter vorbereitet</div></div></div></div></div></div>
+
+<!-- ════ PAYMENT ════ -->
+<div class="pg-v" id="v-payment">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+<div class="kpi"><div class="l">MRR</div><div class="v">5'000 CHF</div></div>
+<div class="kpi"><div class="l">Offene Rechnungen</div><div class="v">0</div></div>
+<div class="kpi"><div class="l">Umsatz YTD</div><div class="v">30'000 CHF</div></div></div>
+<div class="card"><div class="card-h"><h3>Zahlungen</h3></div><table class="tbl"><thead><tr><th>Datum</th><th>Kunde</th><th>Betrag</th><th>Tier</th><th>Status</th></tr></thead><tbody>
+<tr><td>01.06.2026</td><td>HGC</td><td>2'083 CHF</td><td><span class="chip cp">Enterprise</span></td><td style="color:var(--ok500)">Bezahlt</td></tr>
+<tr><td>01.06.2026</td><td>Jura Cement</td><td>2'083 CHF</td><td><span class="chip cp">Enterprise</span></td><td style="color:var(--ok500)">Bezahlt</td></tr>
+<tr><td>01.06.2026</td><td>Demo AG</td><td>833 CHF</td><td><span class="chip ca">Starter</span></td><td style="color:var(--ok500)">Bezahlt</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ GUTSCHEINE ════ -->
+<div class="pg-v" id="v-gutscheine">
+<div class="card"><div class="card-h"><h3>Gutscheine</h3><button class="btn btn-p btn-sm" onclick="M('m-coupon')">+ Gutschein</button></div><table class="tbl"><thead><tr><th>Code</th><th>Rabatt</th><th>Gueltig bis</th><th>Verwendet</th><th>Status</th></tr></thead><tbody>
+<tr><td><span style="background:var(--g50);padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600">WELCOME2026</span></td><td>50% auf 1. Monat</td><td>31.12.2026</td><td>3 / ∞</td><td><span class="chip cs">Aktiv</span></td></tr>
+<tr><td><span style="background:var(--g50);padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600">LINKEDIN30</span></td><td>30% auf 1. Monat</td><td>30.06.2026</td><td>1 / 20</td><td><span class="chip cs">Aktiv</span></td></tr>
+</tbody></table></div></div>
+
+<!-- ════ PLATTFORMEN ════ -->
+<div class="pg-v" id="v-plat">
+<div class="pg" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+<div class="pc" onclick="P('plat-d-hgc')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="pn">HGC</div><div class="pu">hgc.trendradar.ch</div></div><span class="dot ok" style="width:10px;height:10px;margin-top:4px"></span></div><div class="tags-row" style="margin:10px 0"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span><span class="tag t-tl">Prod</span></div><div class="rw"><div class="r"><span>Version</span><span class="v">v2.4.1</span></div><div class="r"><span>DB</span><span class="v">cin_hgc</span></div><div class="r"><span>Uptime</span><span class="v" style="color:var(--ok500)">99.9%</span></div></div></div>
+<div class="pc" onclick="P('plat-d-jura')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="pn">Jura Cement</div><div class="pu">jura.trendradar.ch</div></div><span class="dot ok" style="width:10px;height:10px;margin-top:4px"></span></div><div class="tags-row" style="margin:10px 0"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span><span class="tag t-tl">Prod</span></div><div class="rw"><div class="r"><span>Version</span><span class="v">v2.4.1</span></div><div class="r"><span>DB</span><span class="v">cin_jura</span></div><div class="r"><span>Uptime</span><span class="v" style="color:var(--ok500)">99.8%</span></div></div></div>
+<div class="pc" onclick="P('plat-d-demo')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="pn">Demo</div><div class="pu">demo.trendradar.ch</div></div><span class="dot wn" style="width:10px;height:10px;margin-top:4px"></span></div><div class="tags-row" style="margin:10px 0"><span class="tag t-gy">Demo</span><span class="tag t-pr">Test</span></div><div class="rw"><div class="r"><span>Version</span><span class="v" style="color:var(--w500)">v2.3.8</span></div><div class="r"><span>DB</span><span class="v">cin_demo</span></div><div class="r"><span>Uptime</span><span class="v" style="color:var(--ok500)">99.5%</span></div></div></div>
+</div>
+<div style="display:flex;gap:10px"><button class="btn btn-p" onclick="M('m-update-all')">Alle updaten auf v2.4.1</button><button class="btn btn-s">Health Check</button><button class="btn btn-s">DB Backup</button></div>
+</div>
+
+<!-- ════ PLATTFORM DETAIL (HGC) ════ -->
+<div class="pg-v" id="v-plat-d-hgc">
+<div class="bc"><button onclick="P('plat')">← Plattformen</button><span>/</span><span style="color:var(--g400)">HGC</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--ok400),var(--a500))">HG</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="dot ok" style="width:10px;height:10px"></span><span style="color:var(--ok500);font-weight:600;font-size:13px">Healthy</span></div>
+<h1 style="font-size:22px;font-weight:700">HGC</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">hgc.trendradar.ch</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span><span class="tag t-tl">Prod</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-deploy')">Deploy</button></div>
+<div class="ig">
+<div class="ii"><div class="l">Version</div><div class="v">v2.4.1</div></div>
+<div class="ii"><div class="l">DB</div><div class="v">cin_hgc</div></div>
+<div class="ii"><div class="l">Letztes Update</div><div class="v">05.06.2026, 14:20</div></div>
+<div class="ii"><div class="l">Uptime (30d)</div><div class="v" style="color:var(--ok500)">99.9%</div></div>
+</div>
+<div class="tabs"><div class="tab on" onclick="T(this,'pd-hgc')">Deployment History</div><div class="tab" onclick="T(this,'pd-hgc')">Health Checks</div></div>
+<div class="tab-ct on" id="tc-pd-hgc-0">
+<table class="tbl"><thead><tr><th>Datum</th><th>Version</th><th>Tags</th><th>Status</th><th>Dauer</th></tr></thead><tbody>
+<tr><td>05.06. 14:20</td><td>v2.4.1</td><td><div class="tags-row"><span class="tag t-gr">Bugfix</span><span class="tag t-rd">Hotfix</span></div></td><td style="color:var(--ok500)">OK</td><td style="color:var(--g400)">3m 42s</td></tr>
+<tr><td>01.06. 10:00</td><td>v2.4.0</td><td><div class="tags-row"><span class="tag t-bl">Feature</span></div></td><td style="color:var(--ok500)">OK</td><td style="color:var(--g400)">4m 10s</td></tr>
+</tbody></table></div>
+<div class="tab-ct" id="tc-pd-hgc-1">
+<table class="tbl"><thead><tr><th>Zeitpunkt</th><th>HTTP</th><th>DB</th><th>Disk</th><th>Status</th></tr></thead><tbody>
+<tr><td>08.06. 08:00</td><td style="color:var(--ok500)">200 OK (42ms)</td><td style="color:var(--ok500)">Connected</td><td>28% used</td><td><span class="dot ok"></span></td></tr>
+<tr><td>08.06. 07:00</td><td style="color:var(--ok500)">200 OK (38ms)</td><td style="color:var(--ok500)">Connected</td><td>28% used</td><td><span class="dot ok"></span></td></tr>
+</tbody></table></div>
+</div><div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Aktionen</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-deploy')">↓ Neues Deployment</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start">🔍 Health Check</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start">💾 DB Backup</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start">↗ Plattform oeffnen</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="P('kd-hgc')">👤 Zum Kunden</button>
+</div></div></div></div></div>
+
+<!-- ════ PLATTFORM DETAIL (Jura) ════ -->
+<div class="pg-v" id="v-plat-d-jura">
+<div class="bc"><button onclick="P('plat')">← Plattformen</button><span>/</span><span style="color:var(--g400)">Jura Cement</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--w400),var(--ok400))">JC</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="dot ok" style="width:10px;height:10px"></span><span style="color:var(--ok500);font-weight:600;font-size:13px">Healthy</span></div>
+<h1 style="font-size:22px;font-weight:700">Jura Cement</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">jura.trendradar.ch</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-yl">Bau</span><span class="tag t-rd">VIP</span><span class="tag t-tl">Prod</span></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-deploy')">Deploy</button></div>
+<div class="ig"><div class="ii"><div class="l">Version</div><div class="v">v2.4.1</div></div><div class="ii"><div class="l">DB</div><div class="v">cin_jura</div></div><div class="ii"><div class="l">Uptime</div><div class="v" style="color:var(--ok500)">99.8%</div></div><div class="ii"><div class="l">Update</div><div class="v">05.06.2026</div></div></div>
+</div>
+
+<!-- ════ PLATTFORM DETAIL (Demo) ════ -->
+<div class="pg-v" id="v-plat-d-demo">
+<div class="bc"><button onclick="P('plat')">← Plattformen</button><span>/</span><span style="color:var(--g400)">Demo</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--g300)">DM</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="dot wn" style="width:10px;height:10px"></span><span style="color:var(--w500);font-weight:600;font-size:13px">Update verfuegbar</span></div>
+<h1 style="font-size:22px;font-weight:700">Demo</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">demo.trendradar.ch · <span style="color:var(--w500)">v2.3.8</span> (aktuell: v2.4.1)</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-gy">Demo</span><span class="tag t-pr">Test</span></div></div>
+<button class="btn btn-p btn-sm" onclick="M('m-deploy')">Auf v2.4.1 updaten</button></div>
+<div class="ig"><div class="ii"><div class="l">Version</div><div class="v" style="color:var(--w500)">v2.3.8</div></div><div class="ii"><div class="l">DB</div><div class="v">cin_demo</div></div><div class="ii"><div class="l">Uptime</div><div class="v" style="color:var(--ok500)">99.5%</div></div><div class="ii"><div class="l">Letztes Update</div><div class="v">20.05.2026</div></div></div>
+</div>
+
+<!-- ════ DEPLOYMENTS ════ -->
+<div class="pg-v" id="v-deploy">
+<div class="card"><div class="card-h"><h3>Deployment History</h3><button class="btn btn-p btn-sm" onclick="M('m-deploy')">+ Deployment</button></div><table class="tbl"><thead><tr><th>Datum</th><th>Version</th><th>Mandant</th><th>Env</th><th>Tags</th><th>Pipeline</th><th>Status</th><th>Dauer</th></tr></thead><tbody>
+<tr onclick="P('dep-1')"><td>05.06. 14:20</td><td>v2.4.1</td><td>HGC + Jura</td><td><span class="chip cs">Prod</span></td><td><div class="tags-row"><span class="tag t-gr">Bugfix</span><span class="tag t-rd">Hotfix</span></div></td><td style="font-size:12px;color:var(--g400)">cin-deploy-prod</td><td style="color:var(--ok500)">OK</td><td style="color:var(--g400)">3m 42s</td></tr>
+<tr onclick="P('dep-2')"><td>05.06. 10:15</td><td>v2.4.1</td><td>Demo</td><td><span class="chip ca">Int</span></td><td><div class="tags-row"><span class="tag t-gr">Bugfix</span></div></td><td style="font-size:12px;color:var(--g400)">cin-deploy-int</td><td style="color:var(--ok500)">OK</td><td style="color:var(--g400)">2m 18s</td></tr>
+<tr onclick="P('dep-3')"><td>03.06. 16:00</td><td>v2.4.0</td><td>Alle</td><td><span class="chip cw">Test</span></td><td><div class="tags-row"><span class="tag t-bl">Feature</span></div></td><td style="font-size:12px;color:var(--g400)">cin-deploy-test</td><td style="color:var(--d500)">Fehler</td><td style="color:var(--g400)">1m 05s</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ DEPLOYMENT DETAIL ════ -->
+<div class="pg-v" id="v-dep-1">
+<div class="bc"><button onclick="P('deploy')">← Deployments</button><span>/</span><span style="color:var(--g400)">#D-047</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--ok400),var(--a500))">✓</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cs">Erfolgreich</span><span class="chip cs">Production</span></div>
+<h1 style="font-size:22px;font-weight:700">v2.4.1 → HGC + Jura</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">05.06.2026, 14:20 · Pipeline: cin-deploy-prod · 3m 42s</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-gr">Bugfix</span><span class="tag t-rd">Hotfix</span></div></div></div>
+<div class="ig">
+<div class="ii"><div class="l">Version</div><div class="v">v2.4.1</div></div>
+<div class="ii"><div class="l">Mandanten</div><div class="v">HGC, Jura Cement</div></div>
+<div class="ii"><div class="l">Pipeline</div><div class="v">cin-deploy-prod</div></div>
+<div class="ii"><div class="l">Dauer</div><div class="v">3m 42s</div></div>
+</div>
+<div class="card" style="padding:20px"><h3 style="margin-bottom:12px">Pipeline Log</h3>
+<div style="background:var(--g900);color:var(--ok400);padding:16px;border-radius:10px;font-family:monospace;font-size:12px;line-height:1.8">
+<div style="color:var(--g400)">[14:20:00] Starting deployment cin-deploy-prod...</div>
+<div>[14:20:02] ✓ Build artifacts downloaded (v2.4.1)</div>
+<div>[14:20:15] ✓ DB migration cin_hgc — 3 migrations applied</div>
+<div>[14:20:28] ✓ DB migration cin_jura — 3 migrations applied</div>
+<div>[14:21:10] ✓ Application deployed to HGC</div>
+<div>[14:21:45] ✓ Application deployed to Jura</div>
+<div>[14:22:00] ✓ Health check HGC — 200 OK (35ms)</div>
+<div>[14:22:02] ✓ Health check Jura — 200 OK (42ms)</div>
+<div style="color:var(--ok400);font-weight:700">[14:23:42] ✓ Deployment complete. All systems healthy.</div>
+</div></div>
+</div>
+
+<!-- ════ DEPLOYMENT DETAIL (Failed) ════ -->
+<div class="pg-v" id="v-dep-3">
+<div class="bc"><button onclick="P('deploy')">← Deployments</button><span>/</span><span style="color:var(--g400)">#D-045</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--d500)">✗</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cd">Fehlgeschlagen</span><span class="chip cw">Test</span></div>
+<h1 style="font-size:22px;font-weight:700">v2.4.0 → Alle</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">03.06.2026, 16:00 · cin-deploy-test · 1m 05s</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">Feature</span></div></div></div>
+<div class="card" style="padding:20px"><h3 style="margin-bottom:12px">Pipeline Log</h3>
+<div style="background:var(--g900);color:var(--ok400);padding:16px;border-radius:10px;font-family:monospace;font-size:12px;line-height:1.8">
+<div style="color:var(--g400)">[16:00:00] Starting deployment cin-deploy-test...</div>
+<div>[16:00:02] ✓ Build artifacts downloaded (v2.4.0)</div>
+<div>[16:00:15] ✓ DB migration cin_demo — 5 migrations applied</div>
+<div style="color:var(--d400)">[16:01:03] ✗ Health check failed — HTTP 500</div>
+<div style="color:var(--d400)">[16:01:05] ✗ Error: WorkflowService.Initialize() — NullReferenceException</div>
+<div style="color:var(--w400)">[16:01:05] Rolling back...</div>
+<div>[16:01:05] ✓ Rollback complete. Previous version restored.</div>
+</div></div>
+</div>
+
+<!-- ════ DEPLOYMENT DETAIL (dep-2) ════ -->
+<div class="pg-v" id="v-dep-2">
+<div class="bc"><button onclick="P('deploy')">← Deployments</button><span>/</span><span style="color:var(--g400)">#D-046</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--a400),var(--ok400))">✓</div>
+<div style="flex:1"><span class="chip cs">Erfolgreich</span><span class="chip ca" style="margin-left:6px">Integration</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">v2.4.1 → Demo</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">05.06. 10:15 · cin-deploy-int · 2m 18s</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-gr">Bugfix</span></div></div></div>
+</div>
+
+<!-- ════ RELEASES ════ -->
+<div class="pg-v" id="v-releases">
+<div class="card"><div class="card-h"><h3>Releases (Azure DevOps)</h3></div><table class="tbl"><thead><tr><th>Version</th><th>Datum</th><th>Changelog</th><th>Tags</th><th>Deployed auf</th><th></th></tr></thead><tbody>
+<tr><td><strong>v2.4.1</strong></td><td>05.06.</td><td>Bugfix: Rating, Widget-Perf</td><td><div class="tags-row"><span class="tag t-gr">Bugfix</span></div></td><td>HGC, Jura</td><td><button class="btn btn-p btn-sm" onclick="M('m-deploy')">Deploy</button></td></tr>
+<tr><td><strong>v2.4.0</strong></td><td>01.06.</td><td>Feature: Workflow, Timeline</td><td><div class="tags-row"><span class="tag t-bl">Feature</span></div></td><td>Alle (Test)</td><td><button class="btn btn-s btn-sm" onclick="M('m-deploy')">Deploy</button></td></tr>
+<tr><td style="color:var(--g400)">v2.3.8</td><td>20.05.</td><td>Hotfix: Login, Session</td><td><div class="tags-row"><span class="tag t-rd">Hotfix</span></div></td><td>Alle (Prod)</td><td style="color:var(--g400)">Deployed</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ ONBOARDING ════ -->
+<div class="pg-v" id="v-onboard">
+<div class="card"><div class="card-h"><h3>Onboarding Jobs</h3><button class="btn btn-p btn-sm" onclick="M('m-onboard')">+ Manuell</button></div><table class="tbl"><thead><tr><th>Kunde</th><th>Template</th><th>Tags</th><th>Status</th><th>Fortschritt</th><th>Start</th></tr></thead><tbody>
+<tr onclick="P('ob-1')"><td><strong>TechVision AG</strong></td><td>IT & Digitalisierung</td><td><span class="tag t-bl">IT</span></td><td><span class="chip cp">Laeuft</span></td><td><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:100px"><div class="fl" style="width:75%;background:var(--p400)"></div></div><span style="font-size:12px;color:var(--g400)">3/4</span></div></td><td>Heute</td></tr>
+<tr onclick="P('ob-2')"><td><strong>InnoSwiss</strong></td><td>Pharma</td><td><span class="tag t-gr">Pharma</span></td><td><span class="chip cw">Warten KK</span></td><td><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:100px"><div class="fl" style="width:25%;background:var(--w400)"></div></div><span style="font-size:12px;color:var(--g400)">1/4</span></div></td><td>Gestern</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ ONBOARDING DETAIL ════ -->
+<div class="pg-v" id="v-ob-1">
+<div class="bc"><button onclick="P('onboard')">← Jobs</button><span>/</span><span style="color:var(--g400)">TechVision AG</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:linear-gradient(135deg,var(--p400),var(--a500))">TV</div>
+<div style="flex:1"><span class="chip cp">Laeuft — Schritt 3/4</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">TechVision AG — Onboarding</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Template: IT & Digitalisierung · Gestartet: Heute, 10:00</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">IT</span></div></div></div>
+<div style="margin-bottom:20px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">Fortschritt</span><span style="font-weight:600">75%</span></div><div class="bar" style="height:8px"><div class="fl" style="width:75%;background:var(--p400)"></div></div></div>
+<div class="card" style="padding:20px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--ok50);border-radius:10px"><span style="color:var(--ok500);font-weight:700">✓</span><div><div style="font-weight:600;color:var(--g900)">1. DB erstellt</div><div style="font-size:12px;color:var(--g400)">cin_techvision — 10:01</div></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--ok50);border-radius:10px"><span style="color:var(--ok500);font-weight:700">✓</span><div><div style="font-weight:600;color:var(--g900)">2. Content Types + Widgets</div><div style="font-size:12px;color:var(--g400)">5 Types, 23 Widgets — 10:04</div></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--p50);border-radius:10px;border:1px solid var(--p100)"><span style="color:var(--p500);font-weight:700">⟳</span><div><div style="font-weight:600;color:var(--g900)">3. 15 Trends generieren (KI)</div><div style="font-size:12px;color:var(--p500)">Laeuft... 11/15 erstellt</div></div></div>
+<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--g50);border-radius:10px"><span style="color:var(--g300);font-weight:700">○</span><div><div style="font-weight:600;color:var(--g400)">4. Rating-Kampagne + Action Boards</div><div style="font-size:12px;color:var(--g400)">Wartet</div></div></div>
+</div></div></div>
+
+<!-- ════ ONBOARDING DETAIL 2 ════ -->
+<div class="pg-v" id="v-ob-2">
+<div class="bc"><button onclick="P('onboard')">← Jobs</button><span>/</span><span style="color:var(--g400)">InnoSwiss</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--w400)">IS</div>
+<div style="flex:1"><span class="chip cw">Warten auf KK</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">InnoSwiss GmbH — Onboarding</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Template: Pharma · Gestartet: Gestern, 16:30</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-gr">Pharma</span></div></div></div>
+<div class="card" style="padding:20px">
+<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--w50);border-radius:10px;border:1px solid var(--w100)"><span style="color:var(--w500);font-weight:700">⏸</span><div><div style="font-weight:600;color:var(--g900)">1. Kreditkarten-Eingabe</div><div style="font-size:12px;color:var(--w600)">Stripe Checkout gesendet — wartet auf Bezahlung</div></div></div>
+</div></div>
+
+<!-- ════ MONITORING ════ -->
+<div class="pg-v" id="v-monitor">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+<div class="kpi"><div class="l">AI Tokens (Juni)</div><div class="v">12'450</div><div class="c" style="color:var(--g400)">von 50'000</div></div>
+<div class="kpi"><div class="l">Aktive User (7d)</div><div class="v">8</div><div class="c up">+2</div></div>
+<div class="kpi"><div class="l">Churn-Risiko</div><div class="v" style="color:var(--ok500)">Keins</div></div></div>
+<div class="card"><div class="card-h"><h3>Token pro Mandant</h3></div><table class="tbl"><thead><tr><th>Mandant</th><th>Tags</th><th>Tokens</th><th>Limit</th><th>Auslastung</th><th>Trend</th></tr></thead><tbody>
+<tr onclick="P('plat-d-hgc')"><td>HGC</td><td><div class="tags-row"><span class="tag t-yl">Bau</span></div></td><td>6'200</td><td>25'000</td><td><div class="bar" style="width:80px"><div class="fl" style="width:25%;background:var(--ok400)"></div></div></td><td style="color:var(--ok500)">Normal</td></tr>
+<tr onclick="P('plat-d-jura')"><td>Jura</td><td><div class="tags-row"><span class="tag t-yl">Bau</span></div></td><td>4'800</td><td>25'000</td><td><div class="bar" style="width:80px"><div class="fl" style="width:19%;background:var(--ok400)"></div></div></td><td style="color:var(--ok500)">Normal</td></tr>
+<tr onclick="P('plat-d-demo')"><td>Demo</td><td><div class="tags-row"><span class="tag t-gy">Demo</span></div></td><td>1'450</td><td>5'000</td><td><div class="bar" style="width:80px"><div class="fl" style="width:29%;background:var(--w400)"></div></div></td><td style="color:var(--w500)">Steigend</td></tr>
+</tbody></table></div></div>
+
+<!-- ════ TICKETS ════ -->
+<div class="pg-v" id="v-tickets">
+<div class="tabs"><div class="tab on">Offen (3)</div><div class="tab">In Bearbeitung (1)</div><div class="tab">Geloest (12)</div></div>
+<div class="tf-bar"><span class="tfl">Tags:</span><button class="tf on" onclick="tfTog(this)">Alle</button><button class="tf" onclick="tfTog(this)">Bug</button><button class="tf" onclick="tfTog(this)">Feature</button><button class="tf" onclick="tfTog(this)">UX</button><button class="tf" onclick="tfTog(this)">Rating</button></div>
+<div class="card"><table class="tbl"><thead><tr><th>ID</th><th>Betreff</th><th>Kunde</th><th>Tags</th><th>Prio</th><th>Erstellt</th><th>Status</th></tr></thead><tbody>
+<tr onclick="P('tk-14')"><td style="color:var(--g400)">#014</td><td><strong>Rating-Export funktioniert nicht</strong></td><td>HGC</td><td><div class="tags-row"><span class="tag t-rd">Bug</span><span class="tag t-pr">Rating</span></div></td><td style="color:var(--d500)">Hoch</td><td>Heute</td><td><span class="chip cw">Offen</span></td></tr>
+<tr onclick="P('tk-13')"><td style="color:var(--g400)">#013</td><td><strong>User anlegen — Fehler</strong></td><td>Jura</td><td><div class="tags-row"><span class="tag t-rd">Bug</span><span class="tag t-tl">Auth</span></div></td><td style="color:var(--w500)">Mittel</td><td>Gestern</td><td><span class="chip ca">In Bearbeitung</span></td></tr>
+<tr onclick="P('tk-12')"><td style="color:var(--g400)">#012</td><td><strong>Wunsch: Widget "Timeline"</strong></td><td>HGC</td><td><div class="tags-row"><span class="tag t-bl">Feature</span><span class="tag t-or">Widget</span></div></td><td style="color:var(--g400)">Niedrig</td><td>03.06.</td><td><span class="chip cw">Offen</span></td></tr>
+</tbody></table></div></div>
+
+<!-- ════ TICKET DETAIL (#014) ════ -->
+<div class="pg-v" id="v-tk-14">
+<div class="bc"><button onclick="P('tickets')">← Tickets</button><span>/</span><span style="color:var(--g400)">#014</span></div>
+<div class="det"><div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--d500)">#</div>
+<div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="chip cw">Offen</span><span class="chip cd">Hoch</span></div>
+<h1 style="font-size:22px;font-weight:700">Rating-Export funktioniert nicht</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">HGC · Erstellt: Heute, 11:00</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-rd">Bug</span><span class="tag t-pr">Rating</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div></div>
+<div class="card" style="padding:20px;margin-bottom:16px">
+<h3 style="margin-bottom:12px">Nachrichten</h3>
+<div class="em in"><div class="mt"><span>Roland Mueller (HGC)</span><span>Heute, 11:00</span></div><div class="bd">Wenn ich den Rating-Export als CSV starte, kommt eine Fehlermeldung "500 Internal Server Error". Das betrifft alle Kampagnen. Brauchen wir dringend fuer den Quartalsreport.</div></div>
+<div class="em out"><div class="mt"><span>Bruno Maurer (CIN)</span><span>Heute, 11:15</span></div><div class="bd">Danke fuer die Meldung. Schaue ich mir sofort an — melde mich in 1h mit Update.</div></div>
+<div style="margin-top:12px"><textarea class="input" placeholder="Antwort schreiben..."></textarea><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-ai btn-sm">✦ KI-Antwort</button><button class="btn btn-p btn-sm">Senden</button></div></div>
+</div>
+</div><div>
+<div class="card" style="margin-bottom:12px"><div class="card-h"><h3>Details</h3></div><div style="padding:16px">
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">Status</span><select class="input" style="width:auto;padding:5px 10px;font-size:12px"><option>Offen</option><option>In Bearbeitung</option><option>Warten auf Kunde</option><option>Geloest</option></select></div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">Prioritaet</span><span style="color:var(--d500);font-weight:600">Hoch</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--g400)">Zugewiesen</span><span style="font-weight:500">Bruno Maurer</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--g400)">Kunde</span><button class="btn-g" onclick="P('kd-hgc')" style="padding:2px 8px;font-size:12px">HGC →</button></div>
+</div></div>
+<div class="card"><div class="card-h"><h3>Aktionen</h3></div><div style="padding:12px;display:flex;flex-direction:column;gap:4px">
+<button class="btn-g" style="width:100%;justify-content:flex-start" onclick="M('m-email')">✉️ E-Mail an Kunden</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start;color:var(--ok600)">✓ Als geloest markieren</button>
+<button class="btn-g" style="width:100%;justify-content:flex-start;color:var(--d600)">🗑 Ticket schliessen</button>
+</div></div></div></div></div>
+
+<!-- ════ TICKET DETAIL (#013) ════ -->
+<div class="pg-v" id="v-tk-13">
+<div class="bc"><button onclick="P('tickets')">← Tickets</button><span>/</span><span style="color:var(--g400)">#013</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--w500)">#</div>
+<div style="flex:1"><span class="chip ca">In Bearbeitung</span><span class="chip cw" style="margin-left:6px">Mittel</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">User anlegen — Fehlermeldung</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">Jura Cement · Gestern</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-rd">Bug</span><span class="tag t-tl">Auth</span></div></div></div>
+<div class="em in"><div class="mt"><span>Jura Cement</span><span>Gestern, 09:30</span></div><div class="bd">Beim Erstellen eines neuen Users erscheint: "Error: Email already exists" — obwohl die E-Mail definitiv neu ist.</div></div>
+<div class="em out"><div class="mt"><span>Bruno Maurer</span><span>Gestern, 10:00</span></div><div class="bd">Bekanntes Problem — hängt mit Case-Sensitivity zusammen. Fix kommt mit v2.4.2.</div></div>
+</div>
+
+<!-- ════ TICKET DETAIL (#012) ════ -->
+<div class="pg-v" id="v-tk-12">
+<div class="bc"><button onclick="P('tickets')">← Tickets</button><span>/</span><span style="color:var(--g400)">#012</span></div>
+<div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+<div class="av lg" style="background:var(--g300)">#</div>
+<div style="flex:1"><span class="chip cw">Offen</span><span class="chip cg" style="margin-left:6px">Niedrig</span>
+<h1 style="font-size:22px;font-weight:700;margin-top:6px">Wunsch: Widget "Timeline"</h1><p style="color:var(--g500);font-size:14px;margin-top:4px">HGC · 03.06.2026</p>
+<div class="tags-row" style="margin-top:8px"><span class="tag t-bl">Feature</span><span class="tag t-or">Widget</span></div></div></div>
+<div class="em in"><div class="mt"><span>Roland Mueller (HGC)</span><span>03.06.</span></div><div class="bd">Wir haetten gerne ein Timeline-Widget das Trends chronologisch darstellt. Koennt ihr das umsetzen?</div></div>
+</div>
+
+</div><!-- /content -->
+</main>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Email Modal -->
+<div class="modal-bg" id="m-email" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:600px">
+<div class="modal-h"><h2>E-Mail senden</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-g"><label>An</label><input class="input" value="kontakt@beispiel.ch"></div>
+<div class="form-g"><label>Betreff</label><input class="input" placeholder="Betreff eingeben..."></div>
+<div class="form-g"><label>Nachricht</label><textarea class="input" rows="6" placeholder="Nachricht schreiben..."></textarea></div>
+<div class="form-g"><label>Vorlage</label><select class="input" style="width:auto"><option>Keine</option><option>Welcome + Gutschein</option><option>Follow-up</option><option>Demo-Einladung</option></select></div>
+</div>
+<div class="modal-f"><button class="btn btn-ai btn-sm">✦ KI schreiben lassen</button><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Senden</button></div>
+</div></div>
+
+<!-- New Lead Modal -->
+<div class="modal-bg" id="m-lead" onclick="if(event.target===this)C(this)">
+<div class="modal">
+<div class="modal-h"><h2>Lead erfassen</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-row"><div class="form-g"><label>Vorname</label><input class="input"></div><div class="form-g"><label>Nachname</label><input class="input"></div></div>
+<div class="form-g"><label>Firma</label><input class="input"></div>
+<div class="form-g"><label>LinkedIn Profil-URL</label><input class="input" placeholder="https://linkedin.com/in/..."></div>
+<div class="form-g"><label>E-Mail (optional)</label><input class="input" type="email"></div>
+<div class="form-g"><label>Quelle</label><select class="input"><option>LinkedIn Kampagne</option><option>Website</option><option>Empfehlung</option><option>Event</option><option>Manuell</option></select></div>
+<div class="form-g"><label>Tags</label><div class="tags-row"><span class="tag t-bl">IT</span><button class="tag-add">+ Tag</button></div></div>
+<div class="form-g"><label>Notizen</label><textarea class="input" rows="3"></textarea></div>
+</div>
+<div class="modal-f"><label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--g500);margin-right:auto"><input type="checkbox" checked> Fullenrich starten</label><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Lead erstellen</button></div>
+</div></div>
+
+<!-- New Contact Modal -->
+<div class="modal-bg" id="m-contact" onclick="if(event.target===this)C(this)">
+<div class="modal">
+<div class="modal-h"><h2>Kontakt erstellen</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-row"><div class="form-g"><label>Vorname</label><input class="input"></div><div class="form-g"><label>Nachname</label><input class="input"></div></div>
+<div class="form-g"><label>Firma</label><input class="input"></div>
+<div class="form-g"><label>E-Mail</label><input class="input" type="email"></div>
+<div class="form-g"><label>Telefon</label><input class="input"></div>
+<div class="form-g"><label>Position</label><input class="input" placeholder="CEO, CTO, etc."></div>
+<div class="form-g"><label>Tags</label><div class="tags-row"><button class="tag-add">+ Tag</button></div></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Erstellen</button></div>
+</div></div>
+
+<!-- Tag Picker Modal -->
+<div class="modal-bg" id="m-tag" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:400px">
+<div class="modal-h"><h2>Tag hinzufuegen</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-g"><input class="input" placeholder="Tag suchen oder erstellen..."></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px">
+<button class="tag t-bl" onclick="C(this.closest('.modal-bg'))">IT</button>
+<button class="tag t-gr" onclick="C(this.closest('.modal-bg'))">Pharma</button>
+<button class="tag t-yl" onclick="C(this.closest('.modal-bg'))">Bau</button>
+<button class="tag t-bl" onclick="C(this.closest('.modal-bg'))">Finance</button>
+<button class="tag t-or" onclick="C(this.closest('.modal-bg'))">Hot Lead</button>
+<button class="tag t-rd" onclick="C(this.closest('.modal-bg'))">VIP</button>
+<button class="tag t-pr" onclick="C(this.closest('.modal-bg'))">Kampagne Q2</button>
+<button class="tag t-pk" onclick="C(this.closest('.modal-bg'))">CEO</button>
+<button class="tag t-tl" onclick="C(this.closest('.modal-bg'))">Prod</button>
+<button class="tag t-gy" onclick="C(this.closest('.modal-bg'))">Demo</button>
+<button class="tag t-pr" onclick="C(this.closest('.modal-bg'))">Test</button>
+</div>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--g100)"><button class="btn btn-s btn-sm" style="width:100%">Neuen Tag erstellen</button></div>
+</div></div></div>
+
+<!-- Demo Start Modal -->
+<div class="modal-bg" id="m-demo" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:480px">
+<div class="modal-h"><h2>Demo starten</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<p style="color:var(--g600);margin-bottom:16px">Eine 14-Tage Demo-Instanz wird automatisch erstellt. Der Lead erhaelt eine E-Mail mit Zugangsdaten.</p>
+<div class="form-g"><label>Branchen-Template</label><select class="input"><option>IT & Digitalisierung</option><option>Pharma & Life Sciences</option><option>Bau & Immobilien</option><option>Finance & Insurance</option><option>Allgemein</option></select></div>
+<div class="form-g"><label>Unternehmensbeschreibung (kurz)</label><textarea class="input" rows="3" placeholder="Was macht das Unternehmen?"></textarea></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">⚡ Demo erstellen</button></div>
+</div></div>
+
+<!-- Convert to Customer Modal -->
+<div class="modal-bg" id="m-convert" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:480px">
+<div class="modal-h"><h2>Zum Kunden konvertieren</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<p style="color:var(--g600);margin-bottom:16px">Der Lead wird zum zahlenden Kunden konvertiert. Eine Stripe Checkout Session wird erstellt.</p>
+<div class="form-g"><label>Tier</label><select class="input"><option>Starter (199 CHF/Mt)</option><option>Professional</option><option>Enterprise</option></select></div>
+<div class="form-g"><label>Gutschein (optional)</label><input class="input" placeholder="Code eingeben..."></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">✓ Konvertieren</button></div>
+</div></div>
+
+<!-- Deployment Modal -->
+<div class="modal-bg" id="m-deploy" onclick="if(event.target===this)C(this)">
+<div class="modal">
+<div class="modal-h"><h2>Neues Deployment</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-g"><label>Release</label><select class="input"><option>v2.4.1 — Bugfix: Rating, Widget-Perf</option><option>v2.4.0 — Feature: Workflow, Timeline</option></select></div>
+<div class="form-g"><label>Mandanten</label>
+<div style="display:flex;flex-direction:column;gap:6px"><label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked> HGC (cin_hgc) — aktuell v2.4.1</label><label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked> Jura Cement (cin_jura) — aktuell v2.4.1</label><label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox"> Demo (cin_demo) — aktuell v2.3.8</label></div></div>
+<div class="form-g"><label>Environment</label><select class="input"><option>Production</option><option>Integration</option><option>Test</option></select></div>
+<div class="form-g"><label>Tags</label><div class="tags-row"><span class="tag t-gr">Bugfix</span><button class="tag-add" onclick="M('m-tag')">+ Tag</button></div></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">🚀 Deployment starten</button></div>
+</div></div>
+
+<!-- Update All Modal -->
+<div class="modal-bg" id="m-update-all" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:480px">
+<div class="modal-h"><h2>Alle Plattformen updaten</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<p style="color:var(--g600);margin-bottom:16px">Folgende Mandanten werden auf <strong>v2.4.1</strong> aktualisiert:</p>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--ok50);border-radius:10px"><span style="font-weight:600">HGC</span><span style="color:var(--ok500);font-size:12px">Bereits v2.4.1 ✓</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--ok50);border-radius:10px"><span style="font-weight:600">Jura Cement</span><span style="color:var(--ok500);font-size:12px">Bereits v2.4.1 ✓</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--w50);border-radius:10px;border:1px solid var(--w100)"><span style="font-weight:600">Demo</span><span style="color:var(--w600);font-size:12px">v2.3.8 → v2.4.1</span></div>
+</div></div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Alle updaten</button></div>
+</div></div>
+
+<!-- Coupon Modal -->
+<div class="modal-bg" id="m-coupon" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:480px">
+<div class="modal-h"><h2>Gutschein erstellen</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-g"><label>Code</label><input class="input" placeholder="z.B. SOMMER2026"></div>
+<div class="form-row"><div class="form-g"><label>Rabatt</label><input class="input" placeholder="50" type="number"></div><div class="form-g"><label>Typ</label><select class="input"><option>% auf ersten Monat</option><option>CHF Rabatt</option><option>Monat gratis</option></select></div></div>
+<div class="form-row"><div class="form-g"><label>Gueltig bis</label><input class="input" type="date"></div><div class="form-g"><label>Max. Verwendung</label><input class="input" placeholder="∞" type="number"></div></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Erstellen</button></div>
+</div></div>
+
+<!-- Note Modal -->
+<div class="modal-bg" id="m-note" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:480px">
+<div class="modal-h"><h2>Notiz hinzufuegen</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b"><div class="form-g"><textarea class="input" rows="5" placeholder="Notiz schreiben..."></textarea></div></div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">Speichern</button></div>
+</div></div>
+
+<!-- Onboarding Modal -->
+<div class="modal-bg" id="m-onboard" onclick="if(event.target===this)C(this)">
+<div class="modal">
+<div class="modal-h"><h2>Onboarding manuell starten</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div class="form-g"><label>Kunde / Lead</label><select class="input"><option>Martin Schneider (TechVision AG)</option><option>Sarah Keller (InnoSwiss)</option></select></div>
+<div class="form-g"><label>Branchen-Template</label><select class="input"><option>IT & Digitalisierung</option><option>Pharma & Life Sciences</option><option>Bau & Immobilien</option><option>Allgemein</option></select></div>
+<div class="form-g"><label>Anzahl Trends</label><input class="input" type="number" value="15"></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Abbrechen</button><button class="btn btn-p btn-sm" onclick="C(this.closest('.modal-bg'))">⚡ Starten</button></div>
+</div></div>
+
+<!-- KI Agent Modal -->
+<div class="modal-bg" id="m-agent" onclick="if(event.target===this)C(this)">
+<div class="modal" style="max-width:600px">
+<div class="modal-h"><h2>✦ KI Agent</h2><button onclick="C(this.closest('.modal-bg'))">✕</button></div>
+<div class="modal-b">
+<div style="background:var(--p50);border:1px solid var(--p100);border-radius:12px;padding:16px;margin-bottom:16px">
+<div style="font-size:13px;color:var(--g700);line-height:1.6">
+<strong>Letzte Aktionen:</strong><br>
+• 3 Leads mit branchenspezifischen Neuigkeiten versorgt<br>
+• Follow-up fuer Thomas Huber geplant (09.06.)<br>
+• Welcome-Mail fuer Anna Mueller vorbereitet (wartet auf Fullenrich)
+</div></div>
+<div class="form-g"><label>Anweisung an Agent</label><textarea class="input" rows="3" placeholder="z.B. 'Sende allen IT-Leads eine Neuigkeit zum Thema Cloud Security'"></textarea></div>
+</div>
+<div class="modal-f"><button class="btn btn-s btn-sm" onclick="C(this.closest('.modal-bg'))">Schliessen</button><button class="btn btn-ai btn-sm" onclick="C(this.closest('.modal-bg'))">✦ Ausfuehren</button></div>
+</div></div>
+
+<script>
+// Page navigation
+function P(id,el){
+    document.querySelectorAll('.pg-v').forEach(p=>p.classList.remove('on'));
+    const v=document.getElementById('v-'+id);
+    if(v)v.classList.add('on');
+    if(el&&el.classList.contains('sb-i')){document.querySelectorAll('.sb-i').forEach(n=>n.classList.remove('on'));el.classList.add('on')}
+    document.querySelector('.ct').scrollTop=0;
+}
+// Modal
+function M(id){document.getElementById(id).classList.add('open')}
+function C(el){el.classList.remove('open')}
+// Tabs
+function T(tab,prefix){
+    const tabs=tab.parentElement;
+    const idx=[...tabs.children].indexOf(tab);
+    tabs.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    tab.classList.add('on');
+    document.querySelectorAll('[id^="tc-'+prefix+'-"]').forEach(c=>c.classList.remove('on'));
+    const ct=document.getElementById('tc-'+prefix+'-'+idx);
+    if(ct)ct.classList.add('on');
+}
+// Tag filter toggle
+function tfTog(btn){
+    const bar=btn.parentElement;
+    if(btn.textContent==='Alle'){bar.querySelectorAll('.tf').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}
+    else{bar.querySelector('.tf.on:first-child')?.classList.remove('on');btn.classList.toggle('on');if(!bar.querySelector('.tf.on'))bar.querySelector('.tf').classList.add('on')}
+}
+// Kanban drag & drop
+let dragCard=null;
+document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.kk').forEach(card=>{
+        card.setAttribute('draggable','true');
+        card.addEventListener('dragstart',e=>{dragCard=card;card.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+        card.addEventListener('dragend',()=>{card.classList.remove('dragging');document.querySelectorAll('.kc').forEach(c=>c.classList.remove('drag-over'));dragCard=null;updCnt()});
+    });
+    document.querySelectorAll('.kc-b').forEach(container=>{
+        container.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';container.closest('.kc').classList.add('drag-over')});
+        container.addEventListener('dragleave',e=>{if(!container.contains(e.relatedTarget))container.closest('.kc').classList.remove('drag-over')});
+        container.addEventListener('drop',e=>{e.preventDefault();if(!dragCard)return;container.closest('.kc').classList.remove('drag-over');
+            const after=getAfter(container,e.clientY);after?container.insertBefore(dragCard,after):container.appendChild(dragCard);
+            dragCard.style.background='var(--a50)';setTimeout(()=>dragCard.style.background='',400);updCnt()});
+    });
+});
+function getAfter(c,y){return[...c.querySelectorAll('.kk:not(.dragging)')].reduce((cl,ch)=>{const b=ch.getBoundingClientRect();const o=y-b.top-b.height/2;return o<0&&o>cl.offset?{offset:o,element:ch}:cl},{offset:-Infinity}).element}
+function updCnt(){document.querySelectorAll('.kc').forEach(col=>{const n=col.querySelector('.n');const cards=col.querySelectorAll('.kk').length;if(n)n.textContent=cards})}
+</script>
+</body>
+</html>

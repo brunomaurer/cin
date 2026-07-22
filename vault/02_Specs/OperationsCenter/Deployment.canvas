@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"59b3a9b378d5b5b7","x":-500,"y":-80,"width":250,"height":60,"type":"text","text":"OPS-Center"},
+		{"id":"678997e46a580064","x":-660,"y":-310,"width":250,"height":60,"type":"text","text":"Kunde"},
+		{"id":"a99a95ef1e090d19","x":-20,"y":-220,"width":250,"height":60,"type":"text","text":"DevOps (Azure)"},
+		{"id":"38c44c78f10d25de","x":-300,"y":-400,"width":250,"height":60,"type":"text","text":"Cloudflare"},
+		{"id":"9d455ff37c94cc2f","x":370,"y":180,"width":250,"height":60,"type":"text","text":"Docker Kunde XY"},
+		{"id":"199a3ddeafab50ce","x":40,"y":-50,"width":250,"height":60,"type":"text","text":"Linux-Server"},
+		{"id":"936a2cdfc03ddaa7","x":370,"y":-110,"width":250,"height":60,"type":"text","text":"Docker-Default"},
+		{"id":"921863b928276d52","x":60,"y":320,"width":230,"height":50,"type":"text","text":"CIN-Plattform"},
+		{"id":"35275f7249b6d482","x":-660,"y":310,"width":250,"height":60,"type":"text","text":"Tenant-Datenbank"}
+	],
+	"edges":[
+		{"id":"ac1ba5d1d4e7a3da","fromNode":"678997e46a580064","fromSide":"bottom","toNode":"59b3a9b378d5b5b7","toSide":"top","label":"Neue CIN Plattform"},
+		{"id":"1bd71169c93445c3","fromNode":"59b3a9b378d5b5b7","fromSide":"bottom","toNode":"199a3ddeafab50ce","toSide":"left","label":"Manage Docker"},
+		{"id":"121f5537e40ee8ea","fromNode":"59b3a9b378d5b5b7","fromSide":"bottom","toNode":"35275f7249b6d482","toSide":"top","label":"Tenant-Verwaltung"},
+		{"id":"db4d9b9bff008917","fromNode":"199a3ddeafab50ce","fromSide":"bottom","toNode":"35275f7249b6d482","toSide":"right"},
+		{"id":"eaaa7d286a462c3b","fromNode":"a99a95ef1e090d19","fromSide":"bottom","toNode":"199a3ddeafab50ce","toSide":"top","label":"Deployment"},
+		{"id":"1fea3462bd292c98","fromNode":"59b3a9b378d5b5b7","fromSide":"right","toNode":"a99a95ef1e090d19","toSide":"left","label":"Parametrisieren und \nDeployment triggern"},
+		{"id":"bf9e6e0544a146aa","fromNode":"59b3a9b378d5b5b7","fromSide":"top","toNode":"38c44c78f10d25de","toSide":"bottom","label":"DNS Handling"},
+		{"id":"d869d17e0fd08b72","fromNode":"199a3ddeafab50ce","fromSide":"right","toNode":"9d455ff37c94cc2f","toSide":"left","label":"Docker-Hosting"},
+		{"id":"c45ac8dc59431b04","fromNode":"199a3ddeafab50ce","fromSide":"right","toNode":"936a2cdfc03ddaa7","toSide":"left"},
+		{"id":"97cb564f783fd81c","fromNode":"936a2cdfc03ddaa7","fromSide":"bottom","toNode":"9d455ff37c94cc2f","toSide":"top","label":"Docker kopieren"},
+		{"id":"a6653ae1ea75aaf7","fromNode":"9d455ff37c94cc2f","fromSide":"bottom","toNode":"921863b928276d52","toSide":"top","label":"CIN-Hosting"},
+		{"id":"1a44dca404ff31e2","fromNode":"59b3a9b378d5b5b7","fromSide":"bottom","toNode":"921863b928276d52","toSide":"left","label":"Update CIN-Plattform"}
+	]
+}
