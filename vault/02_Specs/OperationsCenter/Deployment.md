@@ -21,7 +21,7 @@ flowchart TD
     B -->|30 Tage Test| C[Onboarding-Job anlegen]
     B -->|Kreditkarte| S[Stripe Checkout] --> C
     C --> D[DB-Slug bestimmen + in Ops-DB speichern]
-    D --> E[Seeder-Script: 3 Tenant-DBs aus Template erzeugen]
+    D --> E[Seeder-Script: CIN-DB + AI-Graph-DB aus Template erzeugen]
     E --> F[Cloudflare: DNS-Record anlegen]
     F --> G[Azure DevOps API: oci-deploy.yml triggern]
     G --> H[DevOps-Agent auf Target-Server deployed Container]
@@ -54,6 +54,7 @@ Jeder Schritt schreibt seinen Fortschritt in den **Onboarding-Job** (`onboarding
 | Orchestrierung | OPS-Center ruft externe Systeme selbst | Volle Kontrolle, Fortschritt sichtbar, Template-Wahl im OPS |
 | Container-Deploy | Immer über **Azure DevOps Pipeline** | Einheitliches Muster; self-hosted Agent auf Target-Server deployed lokal |
 | DB-Anlage | **Seeder-Script** aus Template-DB | Sauberes Handling (Umlaute, Verschlüsselung), reproduzierbar |
+| DB-Aufteilung | **CIN-DB und AI-Graph-DB getrennt** | AI-Graph ist aus CIN regenerierbar → Re-Index ohne Risiko an der Quelle; Last-Isolation; getrenntes Backup |
 | DNS | **Cloudflare-API** direkt aus OPS-Center | Besser steuerbar als über Pipeline |
 | DB-Identität | **DB-Slug ≠ URL** (entkoppelt) | URL-Wechsel darf **nie** eine DB-Migration auslösen |
 | Templates | Gepflegte „Vorlage-Plattformen" | z.B. `innovationmanagement.template.cin.swiss`, `swissgov.template.cin.swiss` |
@@ -66,7 +67,7 @@ Jeder Schritt schreibt seinen Fortschritt in den **Onboarding-Job** (`onboarding
 |---|---|---|---|
 | 1 | Onboarding-Job anlegen | Ops-DB | `onboardingJobs` (status, currentStep, stepDetails) |
 | 2 | DB-Slug festlegen | Ops-DB | Stabile Identität, Default-Basis `crossinnovation`, einmalig erzeugt + gespeichert |
-| 3 | Tenant-DBs erzeugen | PostgreSQL | Seeder-Script: `cin-<slug>`, `cin-tenant-<slug>`, `cin-events-<slug>` aus gewähltem Template |
+| 3 | Datenbanken erzeugen | PostgreSQL | Seeder-Script: **CIN-DB** (`cin-<slug>`, aus Template) + **AI-Graph-DB** (`cin-graph-<slug>`), getrennt |
 | 4 | DNS anlegen | Cloudflare | API-Call: `<url>.cin.swiss` → Target-Server |
 | 5 | Container deployen | Azure DevOps | `oci-deploy.yml` via DevOps-API triggern (Parameter: Slug, URL, DB-Connection, Image-Tag) |
 | 6 | Deploy ausführen | Target-Server | Self-hosted DevOps-Agent nimmt Job an, fährt Container hoch |
@@ -80,17 +81,17 @@ Jeder Schritt schreibt seinen Fortschritt in den **Onboarding-Job** (`onboarding
 
 ## Namens- & DB-Konzept
 
-**Beispiel realer Tenant „ipg" — es entstehen 3 Datenbanken:**
+Pro Kunde entstehen **zwei getrennte Datenbanken** (unterschiedliche Rollen):
 
-| DB | Rolle |
-|---|---|
-| `cin-ipg` | Haupt-Datenbank (Content, aus Template geseedet) |
-| `cin-tenant-ipg` | Tenant-/Management-Daten |
-| `cin-events-ipg` | Events / Aktivitäten |
+| DB | Muster (Bsp. Slug „ipg") | Rolle |
+|---|---|---|
+| **CIN-DB** | `cin-<slug>` → `cin-ipg` | Quelle der Wahrheit: Content, Ratings, User (aus Template geseedet) |
+| **AI-Graph-DB** | `cin-graph-<slug>` → `cin-graph-ipg` | GraphRAG-Daten (füttert `trendradar.graph`), aus CIN regenerierbar |
 
-- **Muster:** `cin-<slug>` · `cin-tenant-<slug>` · `cin-events-<slug>`
+- **Getrennt gehalten:** Der AI-Graph ist ein Derivat der CIN-DB → jederzeit neu aufbaubar, ohne die Produktivdaten zu gefährden. Last-Isolation + getrenntes Backup.
 - **DB-Slug** ist eine **Variable** (Default-Basis `crossinnovation`), wird **einmal am Start** erzeugt und in der Ops-DB gespeichert.
 - **URL ist getrennt** vom Slug: Ändert der Kunde später seine URL, bleiben die DB-Namen unverändert — keine Migration nötig.
+- **Ein Klick:** Der Orchestrator erzeugt beim Onboarding beide DBs im selben Job; beim Löschen fallen beide zusammen weg.
 
 ---
 
@@ -106,12 +107,12 @@ Tag 0 ─── 30 Tage gratis ───▶ Tag 30: Kreditkarte muss hinterlegt 
                                    │
                                    ▼
                      Tag 40: ALLES automatisch gelöscht
-             (3 DBs · Container via Pipeline · Cloudflare-DNS)
+        (CIN-DB + AI-Graph-DB · Container via Pipeline · Cloudflare-DNS)
 ```
 
 - **Tag 0–30:** kostenlos.
 - **Tag 30:** ohne hinterlegte Kreditkarte → Grace-Periode.
-- **Tag 40:** vollautomatische Löschung — 3 DBs droppen, Container-Removal-Pipeline triggern, DNS-Record entfernen.
+- **Tag 40:** vollautomatische Löschung — CIN-DB + AI-Graph-DB droppen, Container-Removal-Pipeline triggern, DNS-Record entfernen.
 
 ---
 
@@ -173,7 +174,7 @@ Pro Kunde/Job zusätzlich festhalten:
 
 ## Offene Punkte
 
-1. **Tenant-/Events-DB:** Kommen `cin-tenant-<slug>` und `cin-events-<slug>` auch aus einem Template, oder frisch aus Schema? (Nur Haupt-DB aus Template?)
+1. **AI-Graph-DB:** Wird sie beim Onboarding leer erzeugt und danach aus dem CIN-Content aufgebaut (Ingest via `trendradar.graph`), oder gibt es auch dafür ein Template? Und: eigene Postgres-Instanz/Extension (pgvector/Neo4j/AGE) oder dieselbe Postgres wie CIN?
 2. **`oci-deploy.yml`:** Welche Parameter erwartet die Pipeline genau (Slug, URL, DB-Connection, Image-Tag, Port)?
 3. **Cloudflare:** Zone/Account, DNS-Ziel (A-Record IP oder CNAME auf welchen Host)?
 4. **Formular-Ort:** Marketing-Seite oder OPS-Center-Onboarding-Seite?
